@@ -47,19 +47,9 @@
 
 	// Toggle flour status for an ingredient
 	function toggleFlour(id: number): void {
-		ingredients = ingredients.map((ing) => {
-			if (ing.id === id) {
-				// If this is becoming flour, update other flours
-				if (!ing.isFlour) {
-					ingredients = ingredients.map((i) => ({
-						...i,
-						isFlour: false
-					}));
-				}
-				return { ...ing, isFlour: !ing.isFlour };
-			}
-			return ing;
-		});
+		ingredients = ingredients.map((ing) =>
+			ing.id === id ? { ...ing, isFlour: !ing.isFlour } : ing
+		);
 		updateAmounts();
 	}
 
@@ -81,14 +71,17 @@
 
 	// Update percentages when flour quantity changes
 	function updatePercentages(): void {
-		const flour = ingredients.find((ing) => ing.isFlour);
-		if (!flour || flour.amount === 0) return;
+		const totalFlourWeight = ingredients
+			.filter((ing) => ing.isFlour)
+			.reduce((sum, ing) => sum + ing.amount, 0);
+
+		if (totalFlourWeight === 0) return;
 
 		ingredients = ingredients.map((ing) => {
 			if (ing.isFlour) return ing;
 			return {
 				...ing,
-				percentage: Math.round((ing.amount / flour.amount) * 100 * 100) / 100
+				percentage: Math.round((ing.amount / totalFlourWeight) * 100 * 100) / 100
 			};
 		});
 	}
@@ -97,7 +90,12 @@
 	function handleAmountChange(id: number, value: string): void {
 		const numValue = parseFloat(value) || 0;
 		ingredients = ingredients.map((ing) => (ing.id === id ? { ...ing, amount: numValue } : ing));
-		updatePercentages();
+		const updatedIngredient = ingredients.find((ing) => ing.id === id);
+		if (updatedIngredient && !updatedIngredient.isFlour) {
+			updatePercentages();
+		} else if (updatedIngredient && updatedIngredient.isFlour) {
+			updateAmounts();
+		}
 	}
 
 	// Handle changes to ingredient percentage
@@ -286,8 +284,8 @@
 										aria-label={ing.isFlour && flourCount === 1
 											? 'Cannot uncheck - at least one flour base is required'
 											: ing.isFlour
-												? 'This is the flour reference'
-												: `Set ${ing.name || 'ingredient'} as flour reference`}
+												? `${ing.name} is a flour base`
+												: `Set ${ing.name || 'ingredient'} as flour base`}
 									>
 										<input
 											type="checkbox"
