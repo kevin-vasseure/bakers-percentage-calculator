@@ -7,6 +7,40 @@
 	import ShareButton from '$lib/components/ShareButton.svelte';
 	import TotalWeight from '$lib/components/TotalWeight.svelte';
 	import HelpSection from '$lib/components/HelpSection.svelte';
+	import BottomBar from '$lib/components/BottomBar.svelte';
+	import AuthModal from '$lib/components/AuthModal.svelte';
+	import RecipeList from '$lib/components/RecipeList.svelte';
+	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
+	import { authStore } from '$lib/stores/authStore';
+
+	let showAuthModal = false;
+	let authMode: 'signin' | 'signup' = 'signin';
+	let showSaveModal = false;
+	let showRecipeList = false;
+
+	function handleOpenAuth(event: { mode: 'signin' | 'signup' }) {
+		authMode = event.mode;
+		showAuthModal = true;
+	}
+
+
+	function handleLoadRecipe(ingredients: any[]) {
+		// Convert from database format to our ingredient format
+		const convertedIngredients = ingredients.map(ing => ({
+			...ing,
+			isFlour: ing.is_flour || ing.isFlour,
+			amount: Number(ing.amount) || 0,
+			percentage: Number(ing.percentage) || 0,
+			isEditing: false
+		}));
+		
+		ingredientsStore.set(convertedIngredients);
+		ingredientsStore.setNextId(Math.max(...convertedIngredients.map(ing => ing.id)) + 1);
+	}
+
+	function toggleRecipeList() {
+		showRecipeList = !showRecipeList;
+	}
 
 	// Initialize from URL on mount
 	onMount(() => {
@@ -31,13 +65,19 @@
 	}
 </script>
 
-<div class="min-h-screen px-4 py-8">
-	<div class="mx-auto max-w-4xl">
-		<div class="overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-xl">
-			<header class="bg-gradient-to-r from-amber-600 to-orange-600 px-8 py-6 text-white">
-				<h1 class="text-center text-3xl font-bold">Baker's Percentage Calculator</h1>
-				<p class="mt-2 text-center text-amber-100">Calculate perfect bread ratios with ease</p>
-			</header>
+<!-- Main Content -->
+<div class="min-h-screen">
+	<div class="px-4 py-8 pb-20">
+		<div class="mx-auto max-w-4xl">
+			<div class="overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-xl">
+				<header class="bg-gradient-to-r from-amber-600 to-orange-600 px-8 py-6 text-white">
+					<div class="flex items-center justify-center">
+						<div>
+							<h1 class="text-center text-3xl font-bold">Baker's Percentage Calculator</h1>
+							<p class="mt-2 text-center text-amber-100">Calculate perfect bread ratios with ease</p>
+						</div>
+					</div>
+				</header>
 
 			<IngredientTable />
 
@@ -74,6 +114,43 @@
 			<TotalWeight />
 		</div>
 
-		<HelpSection />
+				<HelpSection />
+			</div>
 	</div>
 </div>
+
+<!-- Bottom Bar -->
+<BottomBar 
+	onOpenAuth={handleOpenAuth}
+	onOpenRecipes={toggleRecipeList}
+/>
+
+<!-- Recipe List Slide-up Overlay -->
+{#if showRecipeList}
+	<div class="fixed inset-0 z-50">
+		<!-- Overlay -->
+		<div 
+			class="fixed inset-0 bg-black opacity-50 transition-opacity duration-300"
+			on:click={() => showRecipeList = false}
+			on:keydown={(e) => e.key === 'Enter' && (showRecipeList = false)}
+			role="button"
+			tabindex="0"
+			aria-label="Close recipe list"
+		></div>
+		
+		<!-- Slide-up Panel -->
+		<div class="fixed inset-x-0 bottom-0 h-3/4 max-h-96 transform transition-transform duration-300 ease-out">
+			<div class="h-full bg-white rounded-t-2xl shadow-2xl">
+				<RecipeList 
+					onLoadRecipe={handleLoadRecipe} 
+					onClose={() => showRecipeList = false}
+					isMobile={true}
+				/>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Modals -->
+<AuthModal bind:isOpen={showAuthModal} mode={authMode} />
+<SaveRecipeModal bind:isOpen={showSaveModal} ingredients={$ingredientsStore} />
