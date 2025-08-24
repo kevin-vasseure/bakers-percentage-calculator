@@ -48,7 +48,7 @@ function createAuthStore() {
 		},
 
 		// Sign up with email and password
-		signUp: async (email: string, password: string, fullName?: string) => {
+		signUp: async (email: string, password: string, fullName?: string, captcha_token: string) => {
 			update(state => ({ ...state, loading: true }));
 			
 			const { data, error } = await supabase.auth.signUp({
@@ -57,7 +57,8 @@ function createAuthStore() {
 				options: {
 					data: {
 						full_name: fullName || ''
-					}
+					},
+					captchaToken: captcha_token
 				}
 			});
 
@@ -66,12 +67,15 @@ function createAuthStore() {
 		},
 
 		// Sign in with email and password
-		signIn: async (email: string, password: string) => {
+		signIn: async (email: string, password: string, captcha_token: string) => {
 			update(state => ({ ...state, loading: true }));
 			
 			const { data, error } = await supabase.auth.signInWithPassword({
 				email,
-				password
+				password,
+				options: {
+					captchaToken: captcha_token
+				}
 			});
 
 			update(state => ({ ...state, loading: false }));

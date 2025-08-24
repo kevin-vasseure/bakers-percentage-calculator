@@ -58,24 +58,26 @@
 				error = 'Password must be at least 6 characters';
 				return;
 			}
-			if (!turnstileToken) {
-				error = 'Please complete the security check';
-				return;
-			}
+		}
+
+		// Require Turnstile for both signin and signup (if configured)
+		if (PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+			error = 'Please complete the security check';
+			return;
 		}
 
 		loading = true;
 
 		try {
 			if (mode === 'signup') {
-				const { error: signUpError } = await authStore.signUp(email, password, fullName);
+				const { error: signUpError } = await authStore.signUp(email, password, fullName, turnstileToken);
 				if (signUpError) {
 					error = signUpError.message;
 				} else {
 					message = 'Check your email for a confirmation link!';
 				}
 			} else {
-				const { error: signInError } = await authStore.signIn(email, password);
+				const { error: signInError } = await authStore.signIn(email, password, turnstileToken);
 				if (signInError) {
 					error = signInError.message;
 				} else {
@@ -196,23 +198,23 @@
 							placeholder="Confirm your password"
 						/>
 					</div>
+				{/if}
 
-					<!-- Security Check -->
-					{#if PUBLIC_TURNSTILE_SITE_KEY}
-						<div>
-							<div class="block text-sm font-medium text-gray-700 mb-2" role="group" aria-label="Security Check">
-								Security Check
-							</div>
-							<Turnstile 
-								bind:this={turnstileRef}
-								siteKey={PUBLIC_TURNSTILE_SITE_KEY}
-								onVerify={handleTurnstileVerify}
-								onError={handleTurnstileError}
-								theme="light"
-								size="normal"
-							/>
+				<!-- Security Check for both signin and signup -->
+				{#if PUBLIC_TURNSTILE_SITE_KEY}
+					<div>
+						<div class="block text-sm font-medium text-gray-700 mb-2" role="group" aria-label="Security Check">
+							Security Check
 						</div>
-					{/if}
+						<Turnstile 
+							bind:this={turnstileRef}
+							siteKey={PUBLIC_TURNSTILE_SITE_KEY}
+							onVerify={handleTurnstileVerify}
+							onError={handleTurnstileError}
+							theme="light"
+							size="normal"
+						/>
+					</div>
 				{/if}
 
 				{#if error}
