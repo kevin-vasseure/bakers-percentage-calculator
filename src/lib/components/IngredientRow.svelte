@@ -49,9 +49,9 @@
 
 <tr
 	draggable="true"
-	class="hover:bg-amber-25 group transition-colors duration-200 {isDragged
+	class="hover:bg-gray-100 group transition-colors duration-200 {isDragged
 		? 'scale-95 opacity-50'
-		: ''} {isDragOver ? 'border-l-4 border-amber-500 bg-amber-100' : ''}"
+		: ''} {isDragOver ? 'border-l-4 border-black bg-gray-200' : ''}"
 	on:dragstart={handleDragStart}
 	on:dragover={handleDragOver}
 	on:dragleave={handleDragLeave}
@@ -83,7 +83,7 @@
 				{#if ingredient.isEditing}
 					<input
 						type="text"
-						class="w-full rounded-lg border-2 border-amber-300 px-3 py-2 font-medium transition-all duration-200 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
+						class="w-full border-2 border-black px-3 py-2 font-medium transition-all duration-200 outline-none focus:border-gray-600 focus:ring-2 focus:ring-gray-300"
 						value={ingredient.name}
 						on:blur={() => ingredientsStore.toggleEdit(ingredient.id)}
 						on:keydown={(e) => e.key === 'Enter' && ingredientsStore.toggleEdit(ingredient.id)}
@@ -94,14 +94,14 @@
 				{:else}
 					<button
 						type="button"
-						class="w-full rounded-lg px-3 py-2 text-left font-medium text-gray-800 transition-colors duration-200 hover:bg-amber-100 focus:ring-2 focus:ring-amber-300 focus:outline-none"
+						class="w-full px-3 py-2 text-left font-medium text-gray-800 transition-colors duration-200 hover:bg-gray-100 focus:ring-2 focus:ring-gray-300 focus:outline-none"
 						on:click|stopPropagation={() => ingredientsStore.toggleEdit(ingredient.id)}
 						on:keydown={(e) => e.key === 'Enter' && ingredientsStore.toggleEdit(ingredient.id)}
 						aria-label={`Edit ${ingredient.name || 'ingredient'}`}
 					>
 						{ingredient.name || 'Click to edit'}
 						<span
-							class="ml-2 text-amber-600 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+							class="ml-2 text-black opacity-0 transition-opacity duration-200 group-hover:opacity-100"
 						>✏️</span>
 					</button>
 				{/if}
@@ -131,10 +131,10 @@
 				type="checkbox"
 				bind:checked={ingredient.isFlour}
 				disabled={ingredient.isFlour && flourCount === 1}
-				class="pointer-events-none h-5 w-5 rounded border-2 border-amber-300 text-amber-600 focus:ring-2 focus:ring-amber-500 disabled:opacity-50"
+				class="pointer-events-none h-5 w-5 border-2 border-black text-black focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
 			/>
 			{#if ingredient.isFlour}
-				<span class="ml-2 text-sm font-semibold text-amber-600">BASE</span>
+				<span class="ml-2 text-sm font-semibold text-black">BASE</span>
 			{/if}
 		</div>
 	</td>
@@ -145,7 +145,7 @@
 			<div class="relative">
 				<input
 					type="number"
-					class="w-20 rounded-lg border-2 border-gray-200 px-3 py-2 text-right font-mono transition-all duration-200 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
+					class="w-20 border-2 border-gray-300 px-3 py-2 text-right font-mono transition-all duration-200 outline-none focus:border-black focus:ring-2 focus:ring-gray-300"
 					value={ingredient.percentage}
 					on:input={(e) => ingredientsStore.updatePercentage(ingredient.id, parseFloat((e.target as HTMLInputElement).value) || 0)}
 					min="0"
@@ -153,11 +153,11 @@
 					aria-label={`${ingredient.name || 'Ingredient'} percentage`}
 				/>
 				<span
-					class="pointer-events-none absolute top-1/2 right-1 -translate-y-1/2 transform text-sm text-gray-400"
+					class="pointer-events-none absolute top-1/2 right-1 -translate-y-1/2 transform text-sm text-gray-600"
 				>%</span>
 			</div>
 		{:else}
-			<div class="inline-flex items-center rounded-lg bg-amber-100 px-3 py-2 font-semibold text-amber-800">
+			<div class="inline-flex items-center bg-black px-3 py-2 font-semibold text-white">
 				100%
 			</div>
 		{/if}
@@ -168,8 +168,8 @@
 		<div class="relative">
 			<input
 				type="number"
-				class="w-24 rounded-lg border-2 border-gray-200 px-3 py-2 text-right font-mono transition-all duration-200 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 {ingredient.isFlour
-					? 'border-amber-300 bg-amber-50'
+				class="w-24 border-2 border-gray-300 px-3 py-2 text-right font-mono transition-all duration-200 outline-none focus:border-black focus:ring-2 focus:ring-gray-300 {ingredient.isFlour
+					? 'border-black bg-gray-100'
 					: ''}"
 				value={ingredient.amount}
 				on:input={(e) => ingredientsStore.updateAmount(ingredient.id, parseFloat((e.target as HTMLInputElement).value) || 0)}
@@ -178,7 +178,7 @@
 				aria-label={`${ingredient.name || 'Ingredient'} amount in grams`}
 			/>
 			<span
-				class="pointer-events-none absolute top-1/2 right-1 -translate-y-1/2 transform text-xs text-gray-400"
+				class="pointer-events-none absolute top-1/2 right-1 -translate-y-1/2 transform text-xs text-gray-600"
 			>g</span>
 		</div>
 	</td>
@@ -188,7 +188,7 @@
 		<button
 			type="button"
 			on:click|stopPropagation={() => ingredientsStore.remove(ingredient.id)}
-			class="rounded-lg p-2 text-red-400 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 focus:opacity-100 focus:ring-2 focus:ring-red-300 focus:outline-none"
+			class="p-2 text-gray-400 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-gray-100 hover:text-black focus:opacity-100 focus:ring-2 focus:ring-gray-300 focus:outline-none"
 			aria-label={`Remove ${ingredient.name || 'ingredient'}`}
 		>
 			<svg

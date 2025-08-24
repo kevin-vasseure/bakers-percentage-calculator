@@ -130,7 +130,7 @@
 			aria-modal="true"
 			aria-labelledby="modal-title"
 		>
-			<div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl pointer-events-auto relative">
+			<div class="w-full max-w-md bg-white p-6 border-2 border-black pointer-events-auto relative">
 			<div class="mb-6 text-center">
 				<h2 id="modal-title" class="text-2xl font-bold text-gray-900">
 					{mode === 'signin' ? 'Sign In' : 'Create Account'}
@@ -150,7 +150,7 @@
 							id="fullName"
 							type="text"
 							bind:value={fullName}
-							class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+							class="w-full border-2 border-gray-300 px-3 py-2 focus:border-black focus:outline-none focus:ring-2 focus:ring-gray-300"
 							placeholder="Your full name"
 						/>
 					</div>
@@ -165,7 +165,7 @@
 						type="email"
 						bind:value={email}
 						required
-						class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+						class="w-full border-2 border-gray-300 px-3 py-2 focus:border-black focus:outline-none focus:ring-2 focus:ring-gray-300"
 						placeholder="your@email.com"
 					/>
 				</div>
@@ -179,7 +179,7 @@
 						type="password"
 						bind:value={password}
 						required
-						class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+						class="w-full border-2 border-gray-300 px-3 py-2 focus:border-black focus:outline-none focus:ring-2 focus:ring-gray-300"
 						placeholder="Enter your password"
 					/>
 				</div>
@@ -194,7 +194,7 @@
 							type="password"
 							bind:value={confirmPassword}
 							required
-							class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+							class="w-full border-2 border-gray-300 px-3 py-2 focus:border-black focus:outline-none focus:ring-2 focus:ring-gray-300"
 							placeholder="Confirm your password"
 						/>
 					</div>
@@ -218,13 +218,13 @@
 				{/if}
 
 				{#if error}
-					<div class="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+					<div class="bg-white border-2 border-black p-3 text-sm text-black">
 						{error}
 					</div>
 				{/if}
 
 				{#if message}
-					<div class="rounded-lg bg-green-50 p-3 text-sm text-green-700">
+					<div class="bg-gray-100 border-2 border-black p-3 text-sm text-black">
 						{message}
 					</div>
 				{/if}
@@ -232,7 +232,7 @@
 				<button
 					type="submit"
 					disabled={loading}
-					class="w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 font-semibold text-white shadow-lg transition-all duration-200 hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed"
+					class="w-full bg-black border-2 border-black px-4 py-2 font-semibold text-white transition-all duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					{loading ? 'Processing...' : mode === 'signin' ? 'Sign In' : 'Create Account'}
 				</button>
@@ -242,7 +242,7 @@
 				<button
 					type="button"
 					on:click={switchMode}
-					class="text-sm text-amber-600 hover:text-amber-700 hover:underline"
+					class="text-sm text-black hover:text-gray-600 hover:underline"
 				>
 					{mode === 'signin' 
 						? "Don't have an account? Sign up" 

@@ -1,5 +1,5 @@
-<div class="mt-8 overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-lg">
-	<div class="bg-gradient-to-r from-blue-500 to-indigo-500 px-8 py-4 text-white">
+<div class="mt-8 overflow-hidden border-2 border-black bg-white">
+	<div class="bg-black px-8 py-4 text-white">
 		<h2 class="flex items-center text-xl font-bold">
 			<span class="mr-2">💡</span>
 			How to Use This Calculator
@@ -10,7 +10,7 @@
 			<div class="space-y-4">
 				<div class="flex items-start">
 					<div
-						class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600"
+						class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center bg-black text-sm font-bold text-white"
 					>
 						1
 					</div>
@@ -23,7 +23,7 @@
 				</div>
 				<div class="flex items-start">
 					<div
-						class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600"
+						class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center bg-black text-sm font-bold text-white"
 					>
 						2
 					</div>
@@ -38,7 +38,7 @@
 			<div class="space-y-4">
 				<div class="flex items-start">
 					<div
-						class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600"
+						class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center bg-black text-sm font-bold text-white"
 					>
 						3
 					</div>
@@ -52,7 +52,7 @@
 				<div class="space-y-4">
 					<div class="flex items-start">
 						<div
-							class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600"
+							class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center bg-black text-sm font-bold text-white"
 						>
 							4
 						</div>
@@ -65,7 +65,7 @@
 					</div>
 					<div class="flex items-start">
 						<div
-							class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600"
+							class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center bg-black text-sm font-bold text-white"
 						>
 							5
 						</div>
@@ -79,7 +79,7 @@
 					</div>
 					<div class="flex items-start">
 						<div
-							class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600"
+							class="mt-0.5 mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center bg-black text-sm font-bold text-white"
 						>
 							6
 						</div>

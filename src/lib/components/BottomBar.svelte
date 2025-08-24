@@ -43,7 +43,7 @@
 </script>
 
 <!-- Fixed Bottom Bar -->
-<div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg">
+<div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t-2 border-black">
 	<div class="flex items-center justify-between px-6 py-3">
 		
 		<!-- Recipes Button (left side) -->
@@ -51,7 +51,7 @@
 			<button
 				type="button"
 				on:click={() => onOpenRecipes?.()}
-				class="flex items-center space-x-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-300"
+				class="flex items-center space-x-2 bg-black px-4 py-2 text-sm font-semibold text-white border-2 border-black transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -65,30 +65,30 @@
 		<!-- User Menu (right side) -->
 		<div class="relative">
 			{#if loading}
-				<div class="h-10 w-10 animate-pulse rounded-full bg-gray-200"></div>
+				<div class="h-10 w-10 animate-pulse bg-gray-200 border-2 border-gray-300"></div>
 			{:else if user}
 				<button
 					type="button"
 					on:click={toggleUserMenu}
-					class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-sm font-semibold text-white shadow-lg hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-300"
+					class="flex h-10 w-10 items-center justify-center bg-black text-sm font-semibold text-white border-2 border-black transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
 				>
 					{user.user_metadata?.full_name ? getInitials(user.user_metadata.full_name) : user.email?.[0]?.toUpperCase()}
 				</button>
 
 				{#if showUserMenu}
-					<div class="absolute right-0 bottom-12 z-50 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-						<div class="border-b border-gray-100 px-4 py-2">
+					<div class="absolute right-0 bottom-12 z-50 w-48 border-2 border-black bg-white py-1">
+						<div class="border-b-2 border-black px-4 py-2">
 							<p class="text-sm font-medium text-gray-900">
 								{user.user_metadata?.full_name || 'User'}
 							</p>
 							<p class="text-xs text-gray-500">{user.email}</p>
 						</div>
 						
-						<div class="border-t border-gray-100">
+						<div class="border-t-2 border-black">
 							<button
 								type="button"
 								on:click={handleSignOut}
-								class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+								class="w-full px-4 py-2 text-left text-sm text-black hover:bg-gray-100"
 							>
 								Sign Out
 							</button>
@@ -100,14 +100,14 @@
 					<button
 						type="button"
 						on:click={() => openAuthModal('signin')}
-						class="rounded-lg border border-amber-300 px-3 py-2 text-sm font-medium text-amber-700 hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-300"
+						class="border-2 border-black px-3 py-2 text-sm font-medium text-black hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-black"
 					>
 						Sign In
 					</button>
 					<button
 						type="button"
 						on:click={() => openAuthModal('signup')}
-						class="rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-sm font-semibold text-white hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-300"
+						class="bg-black border-2 border-black px-3 py-2 text-sm font-semibold text-white hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
 					>
 						Sign Up
 					</button>

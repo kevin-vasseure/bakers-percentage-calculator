@@ -69,12 +69,12 @@
 <div class="min-h-screen">
 	<div class="px-4 py-8 pb-20">
 		<div class="mx-auto max-w-4xl">
-			<div class="overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-xl">
-				<header class="bg-gradient-to-r from-amber-600 to-orange-600 px-8 py-6 text-white">
+			<div class="overflow-hidden border-2 border-black bg-white">
+				<header class="bg-black px-8 py-6 text-white">
 					<div class="flex items-center justify-center">
 						<div>
 							<h1 class="text-center text-3xl font-bold">Baker's Percentage Calculator</h1>
-							<p class="mt-2 text-center text-amber-100">Calculate perfect bread ratios with ease</p>
+							<p class="mt-2 text-center text-gray-300">Calculate perfect bread ratios with ease</p>
 						</div>
 					</div>
 				</header>
@@ -82,12 +82,12 @@
 			<IngredientTable />
 
 			<!-- Add Ingredient Button -->
-			<div class="bg-amber-25 border-t border-amber-100 px-8 py-6">
+			<div class="bg-white border-t-2 border-black px-8 py-6">
 				<div class="space-y-4">
 					<button
 						type="button"
 						on:click={() => ingredientsStore.add()}
-						class="flex w-full transform items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-[1.02] hover:from-amber-600 hover:to-orange-600 focus:ring-4 focus:ring-amber-300 focus:outline-none active:scale-[0.98]"
+						class="flex w-full items-center justify-center bg-black px-6 py-3 font-semibold text-white border-2 border-black transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
 						aria-label="Add new ingredient"
 					>
 						<svg

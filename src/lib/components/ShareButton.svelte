@@ -38,7 +38,7 @@
 	<button
 		type="button"
 		on:click={shareRecipe}
-		class="flex w-full transform items-center justify-center rounded-lg border-2 border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-700 transition-all duration-200 hover:scale-[1.02] hover:border-blue-300 hover:bg-blue-100 focus:ring-4 focus:ring-blue-200 focus:outline-none active:scale-[0.98]"
+		class="flex w-full items-center justify-center border-2 border-black bg-white px-6 py-2 font-medium text-black transition-all duration-200 hover:bg-black hover:text-white focus:ring-2 focus:ring-black focus:outline-none"
 		aria-label="Share recipe URL"
 	>
 		<svg
@@ -60,7 +60,7 @@
 
 	{#if showShareMessage}
 		<div
-			class="absolute top-full right-0 left-0 mt-2 rounded-lg border border-green-200 bg-green-100 px-4 py-2 text-sm text-green-800 shadow-md"
+			class="absolute top-full right-0 left-0 mt-2 border-2 border-black bg-gray-100 px-4 py-2 text-sm text-black"
 		>
 			{shareMessage}
 		</div>
