@@ -60,7 +60,7 @@
 			}
 		}
 
-		// Require Turnstile for both signin and signup (if configured)
+		// Require Turnstile for both signin and signup (if configured and not in dev)
 		if (PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
 			error = 'Please complete the security check';
 			return;

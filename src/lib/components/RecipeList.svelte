@@ -5,6 +5,7 @@
 
 	export let onLoadRecipe: ((ingredients: any[]) => void) | undefined = undefined;
 	export let onClose: (() => void) | undefined = undefined;
+	export let onSaveRecipe: (() => void) | undefined = undefined;
 	export let isMobile = false;
 
 	$: recipes = $recipesStore.recipes;
@@ -36,15 +37,15 @@
 	}
 </script>
 
-<div class="h-full flex flex-col bg-white border-r border-gray-200">
+<div class="h-full flex flex-col bg-white border-r-2 border-black">
 	<!-- Header -->
-	<div class="flex items-center justify-between p-4 border-b border-gray-200 bg-amber-50">
-		<h2 class="text-lg font-semibold text-gray-900">My Recipes</h2>
+	<div class="flex items-center justify-between p-4 border-b-2 border-black bg-gray-100">
+		<h2 class="text-lg font-semibold text-black">My Recipes</h2>
 		{#if isMobile}
 			<button
 				type="button"
 				on:click={() => onClose?.()}
-				class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+				class="p-2 text-gray-400 hover:text-black hover:bg-gray-200"
 				aria-label="Close recipe list"
 			>
 				<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,6 +54,19 @@
 			</button>
 		{/if}
 	</div>
+
+	<!-- Save Recipe Button -->
+	{#if user && onSaveRecipe}
+		<div class="p-4 border-b-2 border-black bg-white">
+			<button
+				type="button"
+				on:click={() => onSaveRecipe?.()}
+				class="w-full bg-black text-white px-4 py-2 border-2 border-black font-semibold transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
+			>
+				Save Current Recipe
+			</button>
+		</div>
+	{/if}
 
 	<!-- Content -->
 	<div class="flex-1 overflow-y-auto">
@@ -64,19 +78,19 @@
 			<div class="p-4 space-y-3">
 				{#each Array(3) as _}
 					<div class="animate-pulse">
-						<div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-						<div class="h-3 bg-gray-200 rounded w-1/2"></div>
+						<div class="h-4 bg-gray-200 w-3/4 mb-2"></div>
+						<div class="h-3 bg-gray-200 w-1/2"></div>
 					</div>
 				{/each}
 			</div>
 		{:else if error}
 			<div class="p-4">
-				<div class="bg-red-50 border border-red-200 rounded-lg p-3">
-					<p class="text-sm text-red-700">{error}</p>
+				<div class="bg-white border-2 border-black p-3">
+					<p class="text-sm text-black">{error}</p>
 					<button
 						type="button"
 						on:click={() => recipesStore.clearError()}
-						class="mt-2 text-xs text-red-600 hover:text-red-800 underline"
+						class="mt-2 text-xs text-black hover:text-gray-600 underline"
 					>
 						Dismiss
 					</button>
@@ -91,17 +105,17 @@
 				<p class="text-xs text-gray-400">Save your first recipe to see it here</p>
 			</div>
 		{:else}
-			<div class="divide-y divide-gray-100">
+			<div class="divide-y divide-gray-300">
 				{#each recipes as recipe (recipe.id)}
-					<div class="group hover:bg-gray-50 transition-colors duration-200">
+					<div class="group hover:bg-gray-100 transition-colors duration-200">
 						<div class="p-4">
 							<div class="flex items-start justify-between">
 								<button
 									type="button"
 									on:click={() => loadRecipe(recipe)}
-									class="flex-1 text-left focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-inset rounded"
+									class="flex-1 text-left focus:outline-none focus:ring-2 focus:ring-black focus:ring-inset"
 								>
-									<h3 class="font-medium text-gray-900 group-hover:text-amber-700 transition-colors duration-200">
+									<h3 class="font-medium text-gray-900 group-hover:text-black transition-colors duration-200">
 										{recipe.title}
 									</h3>
 									{#if recipe.description}
@@ -118,7 +132,7 @@
 
 								<div class="ml-2 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
 									{#if recipe.is_public}
-										<div class="p-1 text-green-500" title="Public recipe">
+										<div class="p-1 text-black" title="Public recipe">
 											<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
@@ -135,8 +149,9 @@
 									<button
 										type="button"
 										on:click|stopPropagation={() => deleteRecipe(recipe.id, recipe.title)}
-										class="p-1 text-gray-400 hover:text-red-500 rounded transition-colors duration-200"
+										class="p-1 text-gray-400 hover:text-black hover:bg-gray-200 transition-colors duration-200"
 										title="Delete recipe"
+										aria-label="Delete recipe"
 									>
 										<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

@@ -42,6 +42,10 @@
 		showRecipeList = !showRecipeList;
 	}
 
+	function handleSaveRecipe() {
+		showSaveModal = true;
+	}
+
 	// Initialize from URL on mount
 	onMount(() => {
 		if (!browser) return;
@@ -140,10 +144,11 @@
 		
 		<!-- Slide-up Panel -->
 		<div class="fixed inset-x-0 bottom-0 h-3/4 max-h-96 transform transition-transform duration-300 ease-out">
-			<div class="h-full bg-white rounded-t-2xl shadow-2xl">
+			<div class="h-full bg-white border-t-2 border-black">
 				<RecipeList 
 					onLoadRecipe={handleLoadRecipe} 
 					onClose={() => showRecipeList = false}
+					onSaveRecipe={handleSaveRecipe}
 					isMobile={true}
 				/>
 			</div>
