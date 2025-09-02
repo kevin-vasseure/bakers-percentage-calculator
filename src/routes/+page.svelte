@@ -11,7 +11,7 @@
 	import AuthModal from '$lib/components/AuthModal.svelte';
 	import RecipeList from '$lib/components/RecipeList.svelte';
 	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
-	import { authStore } from '$lib/stores/authStore';
+	import type { Ingredient } from '$lib/stores/ingredientsStore';
 
 	let showAuthModal = false;
 	let authMode: 'signin' | 'signup' = 'signin';
@@ -23,19 +23,18 @@
 		showAuthModal = true;
 	}
 
-
-	function handleLoadRecipe(ingredients: any[]) {
+	function handleLoadRecipe(ingredients: Ingredient[]) {
 		// Convert from database format to our ingredient format
-		const convertedIngredients = ingredients.map(ing => ({
+		const convertedIngredients = ingredients.map((ing) => ({
 			...ing,
-			isFlour: ing.is_flour || ing.isFlour,
+			isFlour: ing.isFlour,
 			amount: Number(ing.amount) || 0,
 			percentage: Number(ing.percentage) || 0,
 			isEditing: false
 		}));
-		
+
 		ingredientsStore.set(convertedIngredients);
-		ingredientsStore.setNextId(Math.max(...convertedIngredients.map(ing => ing.id)) + 1);
+		ingredientsStore.setNextId(Math.max(...convertedIngredients.map((ing) => ing.id)) + 1);
 	}
 
 	function toggleRecipeList() {
@@ -83,71 +82,70 @@
 					</div>
 				</header>
 
-			<IngredientTable />
+				<IngredientTable />
 
-			<!-- Add Ingredient Button -->
-			<div class="bg-white border-t-2 border-black px-8 py-6">
-				<div class="space-y-4">
-					<button
-						type="button"
-						on:click={() => ingredientsStore.add()}
-						class="flex w-full items-center justify-center bg-black px-6 py-3 font-semibold text-white border-2 border-black transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
-						aria-label="Add new ingredient"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="mr-2 h-5 w-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
+				<!-- Add Ingredient Button -->
+				<div class="border-t-2 border-black bg-white px-8 py-6">
+					<div class="space-y-4">
+						<button
+							type="button"
+							on:click={() => ingredientsStore.add()}
+							class="flex w-full items-center justify-center border-2 border-black bg-black px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
+							aria-label="Add new ingredient"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 4v16m8-8H4"
-							/>
-						</svg>
-						Add New Ingredient
-					</button>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="mr-2 h-5 w-5"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M12 4v16m8-8H4"
+								/>
+							</svg>
+							Add New Ingredient
+						</button>
 
-					<ShareButton />
+						<ShareButton />
+					</div>
 				</div>
+
+				<TotalWeight />
 			</div>
 
-			<TotalWeight />
+			<HelpSection />
 		</div>
-
-				<HelpSection />
-			</div>
 	</div>
 </div>
 
 <!-- Bottom Bar -->
-<BottomBar 
-	onOpenAuth={handleOpenAuth}
-	onOpenRecipes={toggleRecipeList}
-/>
+<BottomBar onOpenAuth={handleOpenAuth} onOpenRecipes={toggleRecipeList} />
 
 <!-- Recipe List Slide-up Overlay -->
 {#if showRecipeList}
 	<div class="fixed inset-0 z-50">
 		<!-- Overlay -->
-		<div 
+		<div
 			class="fixed inset-0 bg-black opacity-50 transition-opacity duration-300"
-			on:click={() => showRecipeList = false}
+			on:click={() => (showRecipeList = false)}
 			on:keydown={(e) => e.key === 'Enter' && (showRecipeList = false)}
 			role="button"
 			tabindex="0"
 			aria-label="Close recipe list"
 		></div>
-		
+
 		<!-- Slide-up Panel -->
-		<div class="fixed inset-x-0 bottom-0 h-3/4 max-h-96 transform transition-transform duration-300 ease-out">
-			<div class="h-full bg-white border-t-2 border-black">
-				<RecipeList 
-					onLoadRecipe={handleLoadRecipe} 
-					onClose={() => showRecipeList = false}
+		<div
+			class="fixed inset-x-0 bottom-0 h-3/4 max-h-96 transform transition-transform duration-300 ease-out"
+		>
+			<div class="h-full border-t-2 border-black bg-white">
+				<RecipeList
+					onLoadRecipe={handleLoadRecipe}
+					onClose={() => (showRecipeList = false)}
 					onSaveRecipe={handleSaveRecipe}
 					isMobile={true}
 				/>

@@ -31,18 +31,22 @@ function createRecipesStore() {
 	const { subscribe, set, update } = writable<RecipesState>(initialState);
 
 	const loadRecipes = async () => {
-		update(state => ({ ...state, loading: true, error: null }));
+		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
 			// Get current user
-			const { data: { user }, error: userError } = await supabase.auth.getUser();
+			const {
+				data: { user },
+				error: userError
+			} = await supabase.auth.getUser();
 			if (userError || !user) {
 				throw new Error('User not authenticated');
 			}
 
 			const { data: recipes, error: recipesError } = await supabase
 				.from('recipes')
-				.select(`
+				.select(
+					`
 					*,
 					ingredients (
 						id,
@@ -52,7 +56,8 @@ function createRecipesStore() {
 						percentage,
 						sort_order
 					)
-				`)
+				`
+				)
 				.eq('user_id', user.id)
 				.order('updated_at', { ascending: false });
 
@@ -69,7 +74,9 @@ function createRecipesStore() {
 				}>;
 			};
 
-			const recipesWithIngredients: RecipeWithIngredients[] = (recipes as RecipeWithIngredientsQuery[] || []).map(recipe => ({
+			const recipesWithIngredients: RecipeWithIngredients[] = (
+				(recipes as RecipeWithIngredientsQuery[]) || []
+			).map((recipe) => ({
 				...recipe,
 				ingredients: (recipe.ingredients || [])
 					.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
@@ -84,15 +91,14 @@ function createRecipesStore() {
 					}))
 			}));
 
-			update(state => ({
+			update((state) => ({
 				...state,
 				recipes: recipesWithIngredients,
 				loading: false
 			}));
-
 		} catch (error) {
 			console.error('Error loading recipes:', error);
-			update(state => ({
+			update((state) => ({
 				...state,
 				loading: false,
 				error: error instanceof Error ? error.message : 'Failed to load recipes'
@@ -100,14 +106,22 @@ function createRecipesStore() {
 		}
 	};
 
-	const saveRecipe = async (title: string, description: string, ingredients: Ingredient[], isPublic: boolean = false) => {
-		update(state => ({ ...state, loading: true, error: null }));
+	const saveRecipe = async (
+		title: string,
+		description: string,
+		ingredients: Ingredient[],
+		isPublic: boolean = false
+	) => {
+		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
 			const totalWeight = calculateTotalWeight(ingredients);
 
 			// Get current user
-			const { data: { user }, error: userError } = await supabase.auth.getUser();
+			const {
+				data: { user },
+				error: userError
+			} = await supabase.auth.getUser();
 			if (userError || !user) {
 				throw new Error('User not authenticated');
 			}
@@ -154,10 +168,9 @@ function createRecipesStore() {
 			}
 
 			return { success: true, recipe };
-
 		} catch (error) {
 			console.error('Error saving recipe:', error);
-			update(state => ({
+			update((state) => ({
 				...state,
 				loading: false,
 				error: error instanceof Error ? error.message : 'Failed to save recipe'
@@ -166,16 +179,24 @@ function createRecipesStore() {
 		}
 	};
 
-	const updateRecipe = async (recipeId: string, updates: { title?: string; description?: string; ingredients?: Ingredient[]; isPublic?: boolean }) => {
-		update(state => ({ ...state, loading: true, error: null }));
+	const updateRecipe = async (
+		recipeId: string,
+		updates: {
+			title?: string;
+			description?: string;
+			ingredients?: Ingredient[];
+			isPublic?: boolean;
+		}
+	) => {
+		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
 			const recipeUpdates: RecipeUpdate = {};
-			
+
 			if (updates.title !== undefined) recipeUpdates.title = updates.title;
 			if (updates.description !== undefined) recipeUpdates.description = updates.description;
 			if (updates.isPublic !== undefined) recipeUpdates.is_public = updates.isPublic;
-			
+
 			if (updates.ingredients) {
 				recipeUpdates.total_weight = Math.round(calculateTotalWeight(updates.ingredients));
 			}
@@ -219,10 +240,9 @@ function createRecipesStore() {
 			await loadRecipes();
 
 			return { success: true };
-
 		} catch (error) {
 			console.error('Error updating recipe:', error);
-			update(state => ({
+			update((state) => ({
 				...state,
 				loading: false,
 				error: error instanceof Error ? error.message : 'Failed to update recipe'
@@ -232,29 +252,25 @@ function createRecipesStore() {
 	};
 
 	const deleteRecipe = async (recipeId: string) => {
-		update(state => ({ ...state, loading: true, error: null }));
+		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
-			const { error } = await supabase
-				.from('recipes')
-				.delete()
-				.eq('id', recipeId);
+			const { error } = await supabase.from('recipes').delete().eq('id', recipeId);
 
 			if (error) throw error;
 
 			// Remove from local state
-			update(state => ({
+			update((state) => ({
 				...state,
-				recipes: state.recipes.filter(r => r.id !== recipeId),
+				recipes: state.recipes.filter((r) => r.id !== recipeId),
 				loading: false,
 				selectedRecipeId: state.selectedRecipeId === recipeId ? null : state.selectedRecipeId
 			}));
 
 			return { success: true };
-
 		} catch (error) {
 			console.error('Error deleting recipe:', error);
-			update(state => ({
+			update((state) => ({
 				...state,
 				loading: false,
 				error: error instanceof Error ? error.message : 'Failed to delete recipe'
@@ -264,11 +280,11 @@ function createRecipesStore() {
 	};
 
 	const selectRecipe = (recipeId: string | null) => {
-		update(state => ({ ...state, selectedRecipeId: recipeId }));
+		update((state) => ({ ...state, selectedRecipeId: recipeId }));
 	};
 
 	const clearError = () => {
-		update(state => ({ ...state, error: null }));
+		update((state) => ({ ...state, error: null }));
 	};
 
 	const reset = () => {
