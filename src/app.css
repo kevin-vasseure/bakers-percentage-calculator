@@ -1,3 +1,278 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+/* Semantic Classes */
+.page-container {
+	@apply min-h-screen;
+}
+
+.content-wrapper {
+	@apply px-4 py-8 pb-20;
+}
+
+.main-card {
+	@apply mx-auto max-w-4xl overflow-hidden border-2 border-black bg-white;
+}
+
+.header-section {
+	@apply bg-black px-8 py-6 text-white;
+}
+
+.app-title {
+	@apply text-center text-3xl font-bold;
+}
+
+.app-subtitle {
+	@apply mt-2 text-center text-gray-300;
+}
+
+.primary-button {
+	@apply flex w-full items-center justify-center border-2 border-black bg-black px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none;
+}
+
+.add-ingredient-section {
+	@apply border-t-2 border-black bg-white px-8 py-6;
+}
+
+.button-group {
+	@apply space-y-4;
+}
+
+.button-icon {
+	@apply mr-2 h-5 w-5;
+}
+
+.modal-overlay {
+	@apply fixed inset-0 z-50;
+}
+
+.modal-backdrop {
+	@apply fixed inset-0 bg-black opacity-50 transition-opacity duration-300;
+}
+
+.slide-up-panel {
+	@apply fixed inset-x-0 bottom-0 h-3/4 max-h-96 transform transition-transform duration-300 ease-out;
+}
+
+.panel-content {
+	@apply h-full border-t-2 border-black bg-white;
+}
+
+/* Table Styles */
+.ingredient-table {
+	@apply w-full;
+}
+
+/* Mobile table scrolling */
+@media (max-width: 768px) {
+	.ingredient-table {
+		@apply min-w-max;
+	}
+
+	/* Make table container horizontally scrollable */
+	.ingredient-table-container {
+		@apply -mx-4 overflow-x-auto px-4;
+		/* Add scrollbar styling for better UX */
+		scrollbar-width: thin;
+		scrollbar-color: #cbd5e0 #f7fafc;
+	}
+
+	.ingredient-table-container::-webkit-scrollbar {
+		height: 6px;
+	}
+
+	.ingredient-table-container::-webkit-scrollbar-track {
+		background: #f7fafc;
+	}
+
+	.ingredient-table-container::-webkit-scrollbar-thumb {
+		background: #cbd5e0;
+		border-radius: 3px;
+	}
+
+	/* Ensure minimum column widths on mobile */
+	.table-header-cell--ingredient {
+		@apply min-w-40;
+	}
+
+	.table-header-cell--percentage {
+		@apply min-w-24;
+	}
+
+	.table-header-cell--weight {
+		@apply min-w-28;
+	}
+
+	.table-header-cell--actions {
+		@apply min-w-12;
+	}
+}
+
+.table-header {
+	@apply border-b-2 border-black bg-gray-100;
+}
+
+.table-header-cell {
+	@apply px-6 py-4 font-semibold text-black;
+}
+
+.table-header-cell--ingredient {
+	@apply w-1/3 text-left;
+}
+
+.table-header-cell--percentage {
+	@apply w-24 text-right;
+}
+
+.table-header-cell--weight {
+	@apply w-24 text-right;
+}
+
+.table-header-cell--actions {
+	@apply w-12;
+}
+
+.table-body {
+	@apply divide-y divide-gray-300;
+}
+
+/* Ingredient Row Styles */
+.ingredient-row {
+	@apply transition-colors duration-200 hover:bg-gray-100;
+}
+
+/* Mobile-first: controls visible by default, hide on desktop and show on hover */
+@media (min-width: 769px) {
+	.drag-handle {
+		@apply opacity-0;
+	}
+
+	.edit-icon {
+		@apply opacity-0;
+	}
+
+	.remove-button {
+		@apply opacity-0;
+	}
+
+	.ingredient-row:hover .drag-handle {
+		@apply opacity-100;
+	}
+
+	.ingredient-row:hover .edit-icon {
+		@apply opacity-100;
+	}
+
+	.ingredient-row:hover .remove-button {
+		@apply opacity-100;
+	}
+}
+
+.ingredient-row--dragged {
+	@apply scale-95 opacity-50;
+}
+
+.ingredient-row--drag-over {
+	@apply border-l-4 border-black bg-gray-200;
+}
+
+.ingredient-cell {
+	@apply px-6 py-4;
+}
+
+.ingredient-cell--center {
+	@apply px-4 py-4 text-center;
+}
+
+.ingredient-cell--right {
+	@apply px-4 py-4 text-right;
+}
+
+.drag-handle {
+	@apply mr-3 cursor-grab text-gray-400 opacity-100 transition-opacity duration-200;
+}
+
+.drag-handle-icon {
+	@apply h-5 w-5;
+}
+
+.ingredient-input {
+	@apply w-full border-2 border-black px-3 py-2 font-medium transition-all duration-200 outline-none focus:border-gray-600 focus:ring-2 focus:ring-gray-300;
+}
+
+.ingredient-name-button {
+	@apply w-full px-3 py-2 text-left font-medium text-gray-800 transition-colors duration-200 hover:bg-gray-100 focus:ring-2 focus:ring-gray-300 focus:outline-none;
+}
+
+.edit-icon {
+	@apply ml-2 text-black opacity-100 transition-opacity duration-200;
+}
+
+.flour-checkbox-container {
+	@apply inline-flex cursor-pointer items-center justify-center;
+}
+
+.flour-checkbox-container--disabled {
+	@apply cursor-not-allowed opacity-50;
+}
+
+.flour-checkbox {
+	@apply pointer-events-none h-5 w-5 border-2 border-black text-black focus:ring-2 focus:ring-gray-500 disabled:opacity-50;
+}
+
+.flour-badge {
+	@apply ml-2 text-sm font-semibold text-black;
+}
+
+.flour-badge-toggle {
+	@apply inline-flex cursor-pointer items-center rounded-full px-2 py-1 text-xs font-bold transition-colors duration-200;
+}
+
+.flour-badge-toggle--active {
+	@apply bg-black text-white;
+}
+
+.flour-badge-toggle--inactive {
+	@apply bg-gray-200 text-gray-600 hover:bg-gray-300;
+}
+
+.flour-badge-toggle--disabled {
+	@apply cursor-not-allowed bg-gray-400 text-white;
+}
+
+.percentage-input-container {
+	@apply relative;
+}
+
+.percentage-input {
+	@apply w-20 border-2 border-gray-300 px-3 py-2 text-right font-mono transition-all duration-200 outline-none focus:border-black focus:ring-2 focus:ring-gray-300;
+}
+
+.flour-percentage-badge {
+	@apply inline-flex items-center bg-black px-3 py-2 font-semibold text-white;
+}
+
+.amount-input {
+	@apply w-24 border-2 border-gray-300 px-3 py-2 text-right font-mono transition-all duration-200 outline-none focus:border-black focus:ring-2 focus:ring-gray-300;
+}
+
+.amount-input--flour {
+	@apply border-black bg-gray-100;
+}
+
+.input-unit-label {
+	@apply pointer-events-none absolute top-1/2 right-1 -translate-y-1/2 transform text-xs text-gray-600;
+}
+
+.input-unit-label--percentage {
+	@apply text-sm;
+}
+
+.remove-button {
+	@apply p-2 text-gray-400 opacity-100 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:opacity-100 focus:ring-2 focus:ring-gray-300 focus:outline-none;
+}
+
+.remove-icon {
+	@apply h-5 w-5;
+}

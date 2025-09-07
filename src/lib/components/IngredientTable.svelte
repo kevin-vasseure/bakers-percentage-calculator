@@ -6,18 +6,17 @@
 	$: flourCount = getFlourCount($ingredientsStore);
 </script>
 
-<div class="overflow-x-auto">
-	<table class="w-full">
-		<thead class="border-b-2 border-black bg-gray-100">
+<div class="ingredient-table-container overflow-x-auto">
+	<table class="ingredient-table">
+		<thead class="table-header">
 			<tr>
-				<th class="w-1/3 px-6 py-4 text-left font-semibold text-black">Ingredient</th>
-				<th class="w-24 px-4 py-4 text-center font-semibold text-black">Flour</th>
-				<th class="w-24 px-4 py-4 text-right font-semibold text-black">Percentage</th>
-				<th class="w-24 px-4 py-4 text-right font-semibold text-black">Weight (g)</th>
-				<th class="w-12 px-4 py-4"></th>
+				<th class="table-header-cell table-header-cell--ingredient">Ingredient</th>
+				<th class="table-header-cell table-header-cell--weight">Weight (g)</th>
+				<th class="table-header-cell table-header-cell--percentage">Percentage</th>
+				<th class="table-header-cell table-header-cell--actions"></th>
 			</tr>
 		</thead>
-		<tbody class="divide-y divide-gray-300">
+		<tbody class="table-body">
 			{#each $ingredientsStore as ingredient (ingredient.id)}
 				<IngredientRow {ingredient} {flourCount} />
 			{/each}

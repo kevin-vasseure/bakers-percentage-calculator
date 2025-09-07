@@ -69,15 +69,15 @@
 </script>
 
 <!-- Main Content -->
-<div class="min-h-screen">
-	<div class="px-4 py-8 pb-20">
+<div class="page-container">
+	<div class="content-wrapper">
 		<div class="mx-auto max-w-4xl">
-			<div class="overflow-hidden border-2 border-black bg-white">
-				<header class="bg-black px-8 py-6 text-white">
+			<div class="main-card">
+				<header class="header-section">
 					<div class="flex items-center justify-center">
 						<div>
-							<h1 class="text-center text-3xl font-bold">Baker's Percentage Calculator</h1>
-							<p class="mt-2 text-center text-gray-300">Calculate perfect bread ratios with ease</p>
+							<h1 class="app-title">Baker's Percentage Calculator</h1>
+							<p class="app-subtitle">Calculate perfect bread ratios with ease</p>
 						</div>
 					</div>
 				</header>
@@ -85,17 +85,17 @@
 				<IngredientTable />
 
 				<!-- Add Ingredient Button -->
-				<div class="border-t-2 border-black bg-white px-8 py-6">
-					<div class="space-y-4">
+				<div class="add-ingredient-section">
+					<div class="button-group">
 						<button
 							type="button"
 							on:click={() => ingredientsStore.add()}
-							class="flex w-full items-center justify-center border-2 border-black bg-black px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
+							class="primary-button"
 							aria-label="Add new ingredient"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								class="mr-2 h-5 w-5"
+								class="button-icon"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
@@ -127,10 +127,10 @@
 
 <!-- Recipe List Slide-up Overlay -->
 {#if showRecipeList}
-	<div class="fixed inset-0 z-50">
+	<div class="modal-overlay">
 		<!-- Overlay -->
 		<div
-			class="fixed inset-0 bg-black opacity-50 transition-opacity duration-300"
+			class="modal-backdrop"
 			on:click={() => (showRecipeList = false)}
 			on:keydown={(e) => e.key === 'Enter' && (showRecipeList = false)}
 			role="button"
@@ -139,10 +139,8 @@
 		></div>
 
 		<!-- Slide-up Panel -->
-		<div
-			class="fixed inset-x-0 bottom-0 h-3/4 max-h-96 transform transition-transform duration-300 ease-out"
-		>
-			<div class="h-full border-t-2 border-black bg-white">
+		<div class="slide-up-panel">
+			<div class="panel-content">
 				<RecipeList
 					onLoadRecipe={handleLoadRecipe}
 					onClose={() => (showRecipeList = false)}

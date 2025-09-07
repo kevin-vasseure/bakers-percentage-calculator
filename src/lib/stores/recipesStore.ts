@@ -4,6 +4,7 @@ import { authStore } from './authStore';
 import type { Ingredient } from './ingredientsStore';
 import { calculateTotalWeight } from '$lib/utils/calculations';
 import type { Database } from '$lib/database.types';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 type Recipe = Database['public']['Tables']['recipes']['Row'];
 type RecipeInsert = Database['public']['Tables']['recipes']['Insert'];
@@ -135,7 +136,7 @@ function createRecipesStore() {
 				total_weight: Math.round(totalWeight)
 			};
 
-			const { data: recipe, error: recipeError } = await (supabase as any)
+			const { data: recipe, error: recipeError } = await (supabase as SupabaseClient)
 				.from('recipes')
 				.insert(recipeData)
 				.select()
@@ -153,7 +154,7 @@ function createRecipesStore() {
 				sort_order: index
 			}));
 
-			const { error: ingredientsError } = await (supabase as any)
+			const { error: ingredientsError } = await (supabase as SupabaseClient)
 				.from('ingredients')
 				.insert(ingredientsToInsert);
 
@@ -202,7 +203,7 @@ function createRecipesStore() {
 			}
 
 			// Update recipe
-			const { error: recipeError } = await (supabase as any)
+			const { error: recipeError } = await (supabase as SupabaseClient)
 				.from('recipes')
 				.update(recipeUpdates)
 				.eq('id', recipeId);
@@ -229,7 +230,7 @@ function createRecipesStore() {
 					sort_order: index
 				}));
 
-				const { error: ingredientsError } = await (supabase as any)
+				const { error: ingredientsError } = await (supabase as SupabaseClient)
 					.from('ingredients')
 					.insert(ingredientsToInsert);
 
