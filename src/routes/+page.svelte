@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { ingredientsStore } from '$lib/stores/ingredientsStore';
+	import {
+		currentRecipeStore,
+		currentIngredients,
+		currentNotes,
+		hasEditingIngredient
+	} from '$lib/stores/currentRecipeStore';
 	import { decodeHashToRecipe, updateUrlHash } from '$lib/utils/urlEncoding';
 	import IngredientTable from '$lib/components/IngredientTable.svelte';
 	import ShareButton from '$lib/components/ShareButton.svelte';
@@ -11,7 +16,8 @@
 	import AuthModal from '$lib/components/AuthModal.svelte';
 	import RecipeList from '$lib/components/RecipeList.svelte';
 	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
-	import type { Ingredient } from '$lib/stores/ingredientsStore';
+	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
+	import type { RecipeWithIngredients } from '$lib/stores/recipesStore';
 
 	let showAuthModal = false;
 	let authMode: 'signin' | 'signup' = 'signin';
@@ -23,9 +29,9 @@
 		showAuthModal = true;
 	}
 
-	function handleLoadRecipe(ingredients: Ingredient[]) {
+	function handleLoadRecipe(recipe: RecipeWithIngredients) {
 		// Convert from database format to our ingredient format
-		const convertedIngredients = ingredients.map((ing) => ({
+		const convertedIngredients = recipe.ingredients.map((ing) => ({
 			...ing,
 			isFlour: ing.isFlour,
 			amount: Number(ing.amount) || 0,
@@ -33,8 +39,15 @@
 			isEditing: false
 		}));
 
-		ingredientsStore.set(convertedIngredients);
-		ingredientsStore.setNextId(Math.max(...convertedIngredients.map((ing) => ing.id)) + 1);
+		// Update the unified recipe store with all recipe data
+		currentRecipeStore.set({
+			title: recipe.title || '',
+			description: recipe.description || '',
+			notes: recipe.notes || '',
+			ingredients: convertedIngredients
+		});
+
+		currentRecipeStore.setNextId(Math.max(...convertedIngredients.map((ing) => ing.id)) + 1);
 	}
 
 	function toggleRecipeList() {
@@ -52,18 +65,20 @@
 		const hash = window.location.hash.slice(1);
 		if (hash) {
 			const decodedRecipe = decodeHashToRecipe(hash);
-			if (decodedRecipe && decodedRecipe.length > 0) {
-				ingredientsStore.set(decodedRecipe);
-				ingredientsStore.setNextId(Math.max(...decodedRecipe.map((ing) => ing.id)) + 1);
+			if (decodedRecipe && decodedRecipe.ingredients.length > 0) {
+				// Load the recipe data into our unified store
+				currentRecipeStore.set(decodedRecipe);
+				currentRecipeStore.setNextId(
+					Math.max(...decodedRecipe.ingredients.map((ing) => ing.id)) + 1
+				);
 			}
 		}
 	});
 
-	// Update URL hash when ingredients change (but not when editing)
-	$: if (browser && $ingredientsStore.length > 0) {
-		const hasEditingIngredient = $ingredientsStore.some((ing) => ing.isEditing);
-		if (!hasEditingIngredient) {
-			setTimeout(() => updateUrlHash($ingredientsStore), 100);
+	// Update URL hash when recipe changes (but not when editing)
+	$: if (browser && $currentIngredients.length > 0) {
+		if (!$hasEditingIngredient) {
+			setTimeout(() => updateUrlHash($currentRecipeStore), 100);
 		}
 	}
 </script>
@@ -89,7 +104,7 @@
 					<div class="button-group">
 						<button
 							type="button"
-							on:click={() => ingredientsStore.add()}
+							on:click={() => currentRecipeStore.addIngredient()}
 							class="primary-button"
 							aria-label="Add new ingredient"
 						>
@@ -115,6 +130,21 @@
 				</div>
 
 				<TotalWeight />
+
+				<!-- Recipe Notes Section -->
+				<div class="border-t-2 border-black bg-white px-8 py-6">
+					<div class="mb-4">
+						<h3 class="text-lg font-semibold text-black">Recipe Notes</h3>
+						<p class="mt-1 text-sm text-gray-600">
+							Add instructions, tips, and notes using markdown formatting
+						</p>
+					</div>
+					<MarkdownEditor
+						value={$currentNotes}
+						onchange={(value) => currentRecipeStore.setNotes(value)}
+						placeholder="## Instructions&#10;1. Mix dry ingredients...&#10;&#10;## Tips&#10;- Keep dough at room temperature&#10;- Score deeply for better rise&#10;&#10;## Notes&#10;This recipe works great with..."
+					/>
+				</div>
 			</div>
 
 			<HelpSection />
@@ -154,4 +184,4 @@
 
 <!-- Modals -->
 <AuthModal bind:isOpen={showAuthModal} mode={authMode} />
-<SaveRecipeModal bind:isOpen={showSaveModal} ingredients={$ingredientsStore} />
+<SaveRecipeModal bind:isOpen={showSaveModal} ingredients={$currentIngredients} />

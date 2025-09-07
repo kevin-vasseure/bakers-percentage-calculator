@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { ingredientsStore } from '../stores/ingredientsStore';
-	import { getFlourCount } from '../utils/calculations';
+	import { currentIngredients, flourCount } from '../stores/currentRecipeStore';
 	import IngredientRow from './IngredientRow.svelte';
-
-	$: flourCount = getFlourCount($ingredientsStore);
 </script>
 
 <div class="ingredient-table-container overflow-x-auto">
@@ -17,8 +14,8 @@
 			</tr>
 		</thead>
 		<tbody class="table-body">
-			{#each $ingredientsStore as ingredient (ingredient.id)}
-				<IngredientRow {ingredient} {flourCount} />
+			{#each $currentIngredients as ingredient (ingredient.id)}
+				<IngredientRow {ingredient} flourCount={$flourCount} />
 			{/each}
 		</tbody>
 	</table>

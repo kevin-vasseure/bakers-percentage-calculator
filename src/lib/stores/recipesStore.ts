@@ -110,6 +110,7 @@ function createRecipesStore() {
 	const saveRecipe = async (
 		title: string,
 		description: string,
+		notes: string,
 		ingredients: Ingredient[],
 		isPublic: boolean = false
 	) => {
@@ -132,6 +133,7 @@ function createRecipesStore() {
 				user_id: user.id,
 				title,
 				description,
+				notes,
 				is_public: isPublic,
 				total_weight: Math.round(totalWeight)
 			};
@@ -185,6 +187,7 @@ function createRecipesStore() {
 		updates: {
 			title?: string;
 			description?: string;
+			notes?: string;
 			ingredients?: Ingredient[];
 			isPublic?: boolean;
 		}
@@ -196,6 +199,7 @@ function createRecipesStore() {
 
 			if (updates.title !== undefined) recipeUpdates.title = updates.title;
 			if (updates.description !== undefined) recipeUpdates.description = updates.description;
+			if (updates.notes !== undefined) recipeUpdates.notes = updates.notes;
 			if (updates.isPublic !== undefined) recipeUpdates.is_public = updates.isPublic;
 
 			if (updates.ingredients) {

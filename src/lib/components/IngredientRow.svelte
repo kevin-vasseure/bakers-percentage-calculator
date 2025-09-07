@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Ingredient } from '../stores/ingredientsStore';
-	import { ingredientsStore } from '../stores/ingredientsStore';
+	import { currentRecipeStore } from '../stores/currentRecipeStore';
 	import { dragDropStore } from '../stores/dragDropStore';
 
 	export let ingredient: Ingredient;
@@ -38,7 +38,7 @@
 			return;
 		}
 
-		ingredientsStore.reorder(draggedId, ingredient.id);
+		currentRecipeStore.reorderIngredients(draggedId, ingredient.id);
 		dragDropStore.endDrag();
 	}
 
@@ -83,10 +83,14 @@
 						type="text"
 						class="ingredient-input"
 						value={ingredient.name}
-						on:blur={() => ingredientsStore.toggleEdit(ingredient.id)}
-						on:keydown={(e) => e.key === 'Enter' && ingredientsStore.toggleEdit(ingredient.id)}
+						on:blur={() => currentRecipeStore.toggleIngredientEdit(ingredient.id)}
+						on:keydown={(e) =>
+							e.key === 'Enter' && currentRecipeStore.toggleIngredientEdit(ingredient.id)}
 						on:input={(e) =>
-							ingredientsStore.updateName(ingredient.id, (e.target as HTMLInputElement).value)}
+							currentRecipeStore.updateIngredientName(
+								ingredient.id,
+								(e.target as HTMLInputElement).value
+							)}
 						on:click|stopPropagation
 						aria-label="Edit ingredient name"
 					/>
@@ -95,8 +99,10 @@
 						<button
 							type="button"
 							class="ingredient-name-button flex-1"
-							on:click|stopPropagation={() => ingredientsStore.toggleEdit(ingredient.id)}
-							on:keydown={(e) => e.key === 'Enter' && ingredientsStore.toggleEdit(ingredient.id)}
+							on:click|stopPropagation={() =>
+								currentRecipeStore.toggleIngredientEdit(ingredient.id)}
+							on:keydown={(e) =>
+								e.key === 'Enter' && currentRecipeStore.toggleIngredientEdit(ingredient.id)}
 							aria-label={`Edit ${ingredient.name || 'ingredient'}`}
 						>
 							{ingredient.name || 'Click to edit'}
@@ -114,7 +120,7 @@
 							disabled={ingredient.isFlour && flourCount === 1}
 							on:click|stopPropagation={() =>
 								!(ingredient.isFlour && flourCount === 1) &&
-								ingredientsStore.toggleFlour(ingredient.id)}
+								currentRecipeStore.toggleIngredientFlour(ingredient.id)}
 							aria-label={ingredient.isFlour && flourCount === 1
 								? 'Cannot remove - at least one flour base is required'
 								: ingredient.isFlour
@@ -122,7 +128,7 @@
 									: `Set ${ingredient.name || 'ingredient'} as flour base`}
 							title={ingredient.isFlour ? 'Flour Base' : 'Click to make flour base'}
 						>
-							{ingredient.isFlour ? 'FLOUR' : 'BASE?'}
+							F
 						</button>
 					</div>
 				{/if}
@@ -138,7 +144,7 @@
 				class="amount-input {ingredient.isFlour ? 'amount-input--flour' : ''}"
 				value={ingredient.amount}
 				on:input={(e) =>
-					ingredientsStore.updateAmount(
+					currentRecipeStore.updateIngredientAmount(
 						ingredient.id,
 						parseFloat((e.target as HTMLInputElement).value) || 0
 					)}
@@ -159,7 +165,7 @@
 					class="percentage-input"
 					value={ingredient.percentage}
 					on:input={(e) =>
-						ingredientsStore.updatePercentage(
+						currentRecipeStore.updateIngredientPercentage(
 							ingredient.id,
 							parseFloat((e.target as HTMLInputElement).value) || 0
 						)}
@@ -181,7 +187,7 @@
 	<td class="ingredient-cell--right">
 		<button
 			type="button"
-			on:click|stopPropagation={() => ingredientsStore.remove(ingredient.id)}
+			on:click|stopPropagation={() => currentRecipeStore.removeIngredient(ingredient.id)}
 			class="remove-button"
 			aria-label={`Remove ${ingredient.name || 'ingredient'}`}
 		>

@@ -20,13 +20,15 @@ function createAuthStore() {
 
 	return {
 		subscribe,
-		
+
 		// Initialize auth state
 		initialize: async () => {
 			if (!browser) return;
-			
+
 			try {
-				const { data: { session } } = await supabase.auth.getSession();
+				const {
+					data: { session }
+				} = await supabase.auth.getSession();
 				set({
 					user: session?.user || null,
 					session,
@@ -48,9 +50,9 @@ function createAuthStore() {
 		},
 
 		// Sign up with email and password
-		signUp: async (email: string, password: string, fullName?: string, captcha_token: string) => {
-			update(state => ({ ...state, loading: true }));
-			
+		signUp: async (email: string, password: string, fullName: string, captcha_token: string) => {
+			update((state) => ({ ...state, loading: true }));
+
 			const { data, error } = await supabase.auth.signUp({
 				email,
 				password,
@@ -62,14 +64,14 @@ function createAuthStore() {
 				}
 			});
 
-			update(state => ({ ...state, loading: false }));
+			update((state) => ({ ...state, loading: false }));
 			return { data, error };
 		},
 
 		// Sign in with email and password
 		signIn: async (email: string, password: string, captcha_token: string) => {
-			update(state => ({ ...state, loading: true }));
-			
+			update((state) => ({ ...state, loading: true }));
+
 			const { data, error } = await supabase.auth.signInWithPassword({
 				email,
 				password,
@@ -78,22 +80,22 @@ function createAuthStore() {
 				}
 			});
 
-			update(state => ({ ...state, loading: false }));
+			update((state) => ({ ...state, loading: false }));
 			return { data, error };
 		},
 
 		// Sign out
 		signOut: async () => {
-			update(state => ({ ...state, loading: true }));
-			
+			update((state) => ({ ...state, loading: true }));
+
 			const { error } = await supabase.auth.signOut();
-			
+
 			if (!error) {
 				set({ user: null, session: null, loading: false });
 			} else {
-				update(state => ({ ...state, loading: false }));
+				update((state) => ({ ...state, loading: false }));
 			}
-			
+
 			return { error };
 		},
 

@@ -10,6 +10,7 @@ CREATE TABLE recipes (
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
     title TEXT NOT NULL,
     description TEXT,
+    notes TEXT,
     is_public BOOLEAN DEFAULT false,
     total_weight INTEGER DEFAULT 0,
     slug TEXT UNIQUE,
@@ -69,7 +70,8 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE plpgsql
+SET search_path = public;
 
 CREATE TRIGGER update_recipes_updated_at BEFORE UPDATE ON recipes FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_ingredients_updated_at BEFORE UPDATE ON ingredients FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
@@ -90,17 +92,17 @@ CREATE POLICY "Users can update their own recipes" ON recipes FOR UPDATE USING (
 CREATE POLICY "Users can delete their own recipes" ON recipes FOR DELETE USING (auth.uid() = user_id);
 
 -- Ingredients policies (inherit from recipe permissions)
-CREATE POLICY "Users can view ingredients of viewable recipes" ON ingredients FOR SELECT 
+CREATE POLICY "Users can view ingredients of viewable recipes" ON ingredients FOR SELECT
 USING (EXISTS (
-    SELECT 1 FROM recipes 
-    WHERE recipes.id = ingredients.recipe_id 
+    SELECT 1 FROM recipes
+    WHERE recipes.id = ingredients.recipe_id
     AND (recipes.is_public = true OR recipes.user_id = auth.uid())
 ));
 
-CREATE POLICY "Users can manage ingredients of their own recipes" ON ingredients FOR ALL 
+CREATE POLICY "Users can manage ingredients of their own recipes" ON ingredients FOR ALL
 USING (EXISTS (
-    SELECT 1 FROM recipes 
-    WHERE recipes.id = ingredients.recipe_id 
+    SELECT 1 FROM recipes
+    WHERE recipes.id = ingredients.recipe_id
     AND recipes.user_id = auth.uid()
 ));
 
@@ -109,17 +111,17 @@ CREATE POLICY "Users can view public collections" ON recipe_collections FOR SELE
 CREATE POLICY "Users can manage their own collections" ON recipe_collections FOR ALL USING (auth.uid() = user_id);
 
 -- Recipe collection items policies
-CREATE POLICY "Users can view public collection items" ON recipe_collection_items FOR SELECT 
+CREATE POLICY "Users can view public collection items" ON recipe_collection_items FOR SELECT
 USING (EXISTS (
-    SELECT 1 FROM recipe_collections 
-    WHERE recipe_collections.id = recipe_collection_items.collection_id 
+    SELECT 1 FROM recipe_collections
+    WHERE recipe_collections.id = recipe_collection_items.collection_id
     AND (recipe_collections.is_public = true OR recipe_collections.user_id = auth.uid())
 ));
 
-CREATE POLICY "Users can manage their own collection items" ON recipe_collection_items FOR ALL 
+CREATE POLICY "Users can manage their own collection items" ON recipe_collection_items FOR ALL
 USING (EXISTS (
-    SELECT 1 FROM recipe_collections 
-    WHERE recipe_collections.id = recipe_collection_items.collection_id 
+    SELECT 1 FROM recipe_collections
+    WHERE recipe_collections.id = recipe_collection_items.collection_id
     AND recipe_collections.user_id = auth.uid()
 ));
 
@@ -134,21 +136,23 @@ BEGIN
     -- Create base slug from title
     base_slug := LOWER(REGEXP_REPLACE(TRIM(title), '[^a-zA-Z0-9]+', '-', 'g'));
     base_slug := REGEXP_REPLACE(base_slug, '^-+|-+$', '', 'g');
-    
+
     -- Limit length
     base_slug := SUBSTR(base_slug, 1, 50);
-    
+
     final_slug := base_slug;
-    
+
     -- Check for uniqueness and add counter if needed
-    WHILE EXISTS (SELECT 1 FROM recipes WHERE slug = final_slug) LOOP
+    WHILE EXISTS (SELECT 1 FROM public.recipes WHERE slug = final_slug) LOOP
         counter := counter + 1;
         final_slug := base_slug || '-' || counter;
     END LOOP;
-    
+
     RETURN final_slug;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
 
 -- Trigger to auto-generate slugs for recipes
 CREATE OR REPLACE FUNCTION auto_generate_slug()
@@ -159,6 +163,8 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
 
 CREATE TRIGGER recipes_auto_slug BEFORE INSERT ON recipes FOR EACH ROW EXECUTE PROCEDURE auto_generate_slug();

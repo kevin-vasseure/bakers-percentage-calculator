@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { recipesStore } from '$lib/stores/recipesStore';
 	import { authStore } from '$lib/stores/authStore';
-	import type { Ingredient } from '$lib/stores/ingredientsStore';
 	import type { RecipeWithIngredients } from '$lib/stores/recipesStore';
 
-	export let onLoadRecipe: ((ingredients: Ingredient[]) => void) | undefined = undefined;
+	export let onLoadRecipe: ((recipe: RecipeWithIngredients) => void) | undefined = undefined;
 	export let onClose: (() => void) | undefined = undefined;
 	export let onSaveRecipe: (() => void) | undefined = undefined;
 	export let isMobile = false;
@@ -15,8 +14,8 @@
 	$: user = $authStore.user;
 
 	function loadRecipe(recipe: RecipeWithIngredients) {
-		if (recipe.ingredients && onLoadRecipe) {
-			onLoadRecipe(recipe.ingredients);
+		if (recipe && onLoadRecipe) {
+			onLoadRecipe(recipe);
 			if (isMobile && onClose) {
 				onClose();
 			}
