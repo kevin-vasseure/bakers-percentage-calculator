@@ -24,7 +24,7 @@
 					showShareMessage = false;
 				}, 3000);
 			}
-		} catch (error) {
+		} catch {
 			shareMessage = 'Copy this URL to share your recipe: ' + currentUrl;
 			showShareMessage = true;
 			setTimeout(() => {
@@ -37,7 +37,7 @@
 <div class="relative">
 	<button
 		type="button"
-		on:click={shareRecipe}
+		onclick={shareRecipe}
 		class="flex w-full items-center justify-center border-2 border-black bg-white px-6 py-2 font-medium text-black transition-all duration-200 hover:bg-black hover:text-white focus:ring-2 focus:ring-black focus:outline-none"
 		aria-label="Share recipe URL"
 	>

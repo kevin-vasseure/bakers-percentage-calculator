@@ -6,7 +6,7 @@
 	export let onOpenRecipes: (() => void) | undefined = undefined;
 
 	let showUserMenu = false;
-	
+
 	$: user = $authStore.user;
 	$: loading = $authStore.loading;
 
@@ -35,7 +35,7 @@
 	function getInitials(name: string) {
 		return name
 			.split(' ')
-			.map(n => n[0])
+			.map((n) => n[0])
 			.join('')
 			.toUpperCase()
 			.slice(0, 2);
@@ -43,18 +43,28 @@
 </script>
 
 <!-- Fixed Bottom Bar -->
-<div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t-2 border-black">
+<div class="fixed right-0 bottom-0 left-0 z-40 border-t-2 border-black bg-white">
 	<div class="flex items-center justify-between px-6 py-3">
-		
 		<!-- Recipes Button (left side) -->
 		{#if user}
 			<button
 				type="button"
-				on:click={() => onOpenRecipes?.()}
-				class="flex items-center space-x-2 bg-black px-4 py-2 text-sm font-semibold text-white border-2 border-black transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
+				onclick={() => onOpenRecipes?.()}
+				class="flex items-center space-x-2 border-2 border-black bg-black px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
 			>
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+					/>
 				</svg>
 				<span>My Recipes</span>
 			</button>
@@ -65,14 +75,16 @@
 		<!-- User Menu (right side) -->
 		<div class="relative">
 			{#if loading}
-				<div class="h-10 w-10 animate-pulse bg-gray-200 border-2 border-gray-300"></div>
+				<div class="h-10 w-10 animate-pulse border-2 border-gray-300 bg-gray-200"></div>
 			{:else if user}
 				<button
 					type="button"
-					on:click={toggleUserMenu}
-					class="flex h-10 w-10 items-center justify-center bg-black text-sm font-semibold text-white border-2 border-black transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
+					onclick={toggleUserMenu}
+					class="flex h-10 w-10 items-center justify-center border-2 border-black bg-black text-sm font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
 				>
-					{user.user_metadata?.full_name ? getInitials(user.user_metadata.full_name) : user.email?.[0]?.toUpperCase()}
+					{user.user_metadata?.full_name
+						? getInitials(user.user_metadata.full_name)
+						: user.email?.[0]?.toUpperCase()}
 				</button>
 
 				{#if showUserMenu}
@@ -83,11 +95,11 @@
 							</p>
 							<p class="text-xs text-gray-500">{user.email}</p>
 						</div>
-						
+
 						<div class="border-t-2 border-black">
 							<button
 								type="button"
-								on:click={handleSignOut}
+								onclick={handleSignOut}
 								class="w-full px-4 py-2 text-left text-sm text-black hover:bg-gray-100"
 							>
 								Sign Out
@@ -99,15 +111,15 @@
 				<div class="flex space-x-2">
 					<button
 						type="button"
-						on:click={() => openAuthModal('signin')}
-						class="border-2 border-black px-3 py-2 text-sm font-medium text-black hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-black"
+						onclick={() => openAuthModal('signin')}
+						class="border-2 border-black px-3 py-2 text-sm font-medium text-black hover:bg-black hover:text-white focus:ring-2 focus:ring-black focus:outline-none"
 					>
 						Sign In
 					</button>
 					<button
 						type="button"
-						on:click={() => openAuthModal('signup')}
-						class="bg-black border-2 border-black px-3 py-2 text-sm font-semibold text-white hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-black"
+						onclick={() => openAuthModal('signup')}
+						class="border-2 border-black bg-black px-3 py-2 text-sm font-semibold text-white hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
 					>
 						Sign Up
 					</button>
@@ -119,9 +131,5 @@
 
 <!-- Close user menu when clicking outside -->
 {#if showUserMenu}
-	<div 
-		class="fixed inset-0 z-30" 
-		on:click={closeUserMenu}
-		aria-hidden="true"
-	></div>
+	<div class="fixed inset-0 z-30" onclick={closeUserMenu} aria-hidden="true"></div>
 {/if}

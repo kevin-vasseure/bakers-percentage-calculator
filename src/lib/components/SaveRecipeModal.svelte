@@ -83,8 +83,8 @@
 		<!-- Black overlay -->
 		<div
 			class="fixed inset-0 bg-black opacity-50"
-			on:click={closeModal}
-			on:keydown={(e) => e.key === 'Enter' && closeModal()}
+			onclick={closeModal}
+			onkeydown={(e) => e.key === 'Enter' && closeModal()}
 			role="button"
 			tabindex="0"
 			aria-label="Close modal"
@@ -103,7 +103,13 @@
 					<p class="mt-2 text-sm text-gray-600">Save your current recipe to access it later</p>
 				</div>
 
-				<form on:submit|preventDefault={handleSave} class="space-y-4">
+				<form
+					onsubmit={(e) => {
+						e.preventDefault();
+						handleSave();
+					}}
+					class="space-y-4"
+				>
 					<div>
 						<label for="title" class="mb-1 block text-sm font-medium text-gray-700">
 							Recipe Title *
@@ -171,7 +177,7 @@
 					<div class="flex space-x-3">
 						<button
 							type="button"
-							on:click={closeModal}
+							onclick={closeModal}
 							class="flex-1 border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-black hover:text-white focus:ring-2 focus:ring-black focus:outline-none"
 						>
 							Cancel

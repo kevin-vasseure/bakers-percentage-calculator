@@ -5,7 +5,8 @@
 		currentRecipeStore,
 		currentIngredients,
 		currentNotes,
-		hasEditingIngredient
+		hasEditingIngredient,
+		type CurrentRecipe
 	} from '$lib/stores/currentRecipeStore';
 	import { decodeHashToRecipe, updateUrlHash } from '$lib/utils/urlEncoding';
 	import IngredientTable from '$lib/components/IngredientTable.svelte';
@@ -17,7 +18,7 @@
 	import RecipeList from '$lib/components/RecipeList.svelte';
 	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
 	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
-	import type { RecipeWithIngredients } from '$lib/stores/recipesStore';
+	import { recipesStore, type RecipeWithIngredients } from '$lib/stores/recipesStore';
 
 	let showAuthModal = false;
 	let authMode: 'signin' | 'signup' = 'signin';
@@ -41,13 +42,19 @@
 
 		// Update the unified recipe store with all recipe data
 		currentRecipeStore.set({
+			id: recipe.id,
 			title: recipe.title || '',
 			description: recipe.description || '',
 			notes: recipe.notes || '',
-			ingredients: convertedIngredients
+			ingredients: convertedIngredients,
+			isPublic: recipe.is_public || false
 		});
 
 		currentRecipeStore.setNextId(Math.max(...convertedIngredients.map((ing) => ing.id)) + 1);
+	}
+
+	function handleUpdateRecipe(currentRecipe: CurrentRecipe) {
+		recipesStore.updateRecipe(currentRecipe.id, currentRecipe);
 	}
 
 	function toggleRecipeList() {
@@ -104,7 +111,7 @@
 					<div class="button-group">
 						<button
 							type="button"
-							on:click={() => currentRecipeStore.addIngredient()}
+							onclick={() => currentRecipeStore.addIngredient()}
 							class="primary-button"
 							aria-label="Add new ingredient"
 						>
@@ -161,8 +168,8 @@
 		<!-- Overlay -->
 		<div
 			class="modal-backdrop"
-			on:click={() => (showRecipeList = false)}
-			on:keydown={(e) => e.key === 'Enter' && (showRecipeList = false)}
+			onclick={() => (showRecipeList = false)}
+			onkeydown={(e) => e.key === 'Enter' && (showRecipeList = false)}
 			role="button"
 			tabindex="0"
 			aria-label="Close recipe list"
@@ -173,6 +180,7 @@
 			<div class="panel-content">
 				<RecipeList
 					onLoadRecipe={handleLoadRecipe}
+					onUpdateRecipe={handleUpdateRecipe}
 					onClose={() => (showRecipeList = false)}
 					onSaveRecipe={handleSaveRecipe}
 					isMobile={true}

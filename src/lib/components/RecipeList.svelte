@@ -1,17 +1,34 @@
 <script lang="ts">
 	import { recipesStore } from '$lib/stores/recipesStore';
 	import { authStore } from '$lib/stores/authStore';
+	import { currentRecipeStore } from '$lib/stores/currentRecipeStore';
 	import type { RecipeWithIngredients } from '$lib/stores/recipesStore';
+	import type { CurrentRecipe } from '$lib/stores/currentRecipeStore';
 
-	export let onLoadRecipe: ((recipe: RecipeWithIngredients) => void) | undefined = undefined;
-	export let onClose: (() => void) | undefined = undefined;
-	export let onSaveRecipe: (() => void) | undefined = undefined;
-	export let isMobile = false;
+	interface Props {
+		onLoadRecipe?: ((recipe: RecipeWithIngredients) => void) | undefined;
+		onUpdateRecipe?: ((recipe: CurrentRecipe) => void) | undefined;
+		onClose?: (() => void) | undefined;
+		onSaveRecipe?: (() => void) | undefined;
+		isMobile?: boolean;
+	}
 
-	$: recipes = $recipesStore.recipes;
-	$: loading = $recipesStore.loading;
-	$: error = $recipesStore.error;
-	$: user = $authStore.user;
+	let { onLoadRecipe, onUpdateRecipe, onClose, onSaveRecipe, isMobile = false }: Props = $props();
+
+	let recipes = $derived($recipesStore.recipes);
+	let loading = $derived($recipesStore.loading);
+	let error = $derived($recipesStore.error);
+	let user = $derived($authStore.user);
+	let currentRecipe = $derived($currentRecipeStore);
+
+	// Check if current recipe matches a saved recipe and has changes
+	let canUpdateRecipe = $derived(() => {
+		return (
+			currentRecipe.id &&
+			currentRecipe.title.trim() !== '' &&
+			recipes.some((r) => r.id === currentRecipe.id)
+		);
+	});
 
 	function loadRecipe(recipe: RecipeWithIngredients) {
 		if (recipe && onLoadRecipe) {
@@ -35,6 +52,12 @@
 			await recipesStore.deleteRecipe(recipeId);
 		}
 	}
+
+	function updateCurrentRecipe() {
+		if (currentRecipe.id && onUpdateRecipe) {
+			onUpdateRecipe(currentRecipe);
+		}
+	}
 </script>
 
 <div class="flex h-full flex-col border-r-2 border-black bg-white">
@@ -44,7 +67,7 @@
 		{#if isMobile}
 			<button
 				type="button"
-				on:click={() => onClose?.()}
+				onclick={() => onClose?.()}
 				class="p-2 text-gray-400 hover:bg-gray-200 hover:text-black"
 				aria-label="Close recipe list"
 			>
@@ -63,13 +86,35 @@
 	<!-- Save Recipe Button -->
 	{#if user && onSaveRecipe}
 		<div class="border-b-2 border-black bg-white p-4">
-			<button
-				type="button"
-				on:click={() => onSaveRecipe?.()}
-				class="w-full border-2 border-black bg-black px-4 py-2 font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
+			<div
+				class={canUpdateRecipe()
+					? 'flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2'
+					: ''}
 			>
-				Save Current Recipe
-			</button>
+				<button
+					type="button"
+					onclick={() => onSaveRecipe?.()}
+					class="{canUpdateRecipe()
+						? 'w-full md:w-1/2'
+						: 'w-full'} border-2 border-black bg-black px-4 py-2 font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none"
+				>
+					{#if canUpdateRecipe()}
+						Save As New Recipe
+					{:else}
+						Save Current Recipe
+					{/if}
+				</button>
+				<!-- Update Recipe Button -->
+				{#if canUpdateRecipe()}
+					<button
+						type="button"
+						onclick={() => updateCurrentRecipe()}
+						class="w-full border-2 border-yellow-500 bg-yellow-500 px-4 py-2 font-semibold text-black transition-colors duration-200 hover:bg-white hover:text-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:outline-none md:w-1/2"
+					>
+						Update "{currentRecipe.title}"
+					</button>
+				{/if}
+			</div>
 		</div>
 	{/if}
 
@@ -94,7 +139,7 @@
 					<p class="text-sm text-black">{error}</p>
 					<button
 						type="button"
-						on:click={() => recipesStore.clearError()}
+						onclick={() => recipesStore.clearError()}
 						class="mt-2 text-xs text-black underline hover:text-gray-600"
 					>
 						Dismiss
@@ -127,13 +172,18 @@
 							<div class="flex items-start justify-between">
 								<button
 									type="button"
-									on:click={() => loadRecipe(recipe)}
+									onclick={() => loadRecipe(recipe)}
 									class="flex-1 text-left focus:ring-2 focus:ring-black focus:outline-none focus:ring-inset"
 								>
 									<h3
 										class="font-medium text-gray-900 transition-colors duration-200 group-hover:text-black"
 									>
 										{recipe.title}
+										{#if currentRecipe.id === recipe.id}
+											<span class="ml-2 text-xs font-normal text-yellow-600"
+												>(currently editing)</span
+											>
+										{/if}
 									</h3>
 									{#if recipe.description}
 										<p class="mt-1 line-clamp-2 text-sm text-gray-500">
@@ -182,7 +232,10 @@
 
 									<button
 										type="button"
-										on:click|stopPropagation={() => deleteRecipe(recipe.id, recipe.title)}
+										onclick={(e) => {
+											e.stopPropagation();
+											deleteRecipe(recipe.id, recipe.title);
+										}}
 										class="p-1 text-gray-400 transition-colors duration-200 hover:bg-gray-200 hover:text-black"
 										title="Delete recipe"
 										aria-label="Delete recipe"

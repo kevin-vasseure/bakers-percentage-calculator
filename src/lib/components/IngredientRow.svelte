@@ -91,7 +91,6 @@
 								ingredient.id,
 								(e.target as HTMLInputElement).value
 							)}
-						on:click|stopPropagation
 						aria-label="Edit ingredient name"
 					/>
 				{:else}

@@ -6,7 +6,7 @@
 	export let onOpenRecipes: (() => void) | undefined = undefined;
 
 	let showDropdown = false;
-	
+
 	$: user = $authStore.user;
 	$: loading = $authStore.loading;
 
@@ -35,7 +35,7 @@
 	function getInitials(name: string) {
 		return name
 			.split(' ')
-			.map(n => n[0])
+			.map((n) => n[0])
 			.join('')
 			.toUpperCase()
 			.slice(0, 2);
@@ -48,33 +48,37 @@
 	{:else if user}
 		<button
 			type="button"
-			on:click={toggleDropdown}
-			class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-sm font-semibold text-white shadow-lg hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-300"
+			onclick={toggleDropdown}
+			class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-sm font-semibold text-white shadow-lg hover:from-amber-600 hover:to-orange-600 focus:ring-2 focus:ring-amber-300 focus:outline-none"
 		>
-			{user.user_metadata?.full_name ? getInitials(user.user_metadata.full_name) : user.email?.[0]?.toUpperCase()}
+			{user.user_metadata?.full_name
+				? getInitials(user.user_metadata.full_name)
+				: user.email?.[0]?.toUpperCase()}
 		</button>
 
 		{#if showDropdown}
-			<div class="absolute right-0 top-10 z-50 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+			<div
+				class="absolute top-10 right-0 z-50 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+			>
 				<div class="border-b border-gray-100 px-4 py-2">
 					<p class="text-sm font-medium text-gray-900">
 						{user.user_metadata?.full_name || 'User'}
 					</p>
 					<p class="text-xs text-gray-500">{user.email}</p>
 				</div>
-				
+
 				<button
 					type="button"
 					class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-					on:click={() => onOpenRecipes?.()}
+					onclick={() => onOpenRecipes?.()}
 				>
 					My Recipes
 				</button>
-				
+
 				<div class="border-t border-gray-100">
 					<button
 						type="button"
-						on:click={handleSignOut}
+						onclick={handleSignOut}
 						class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
 					>
 						Sign Out
@@ -86,15 +90,15 @@
 		<div class="flex space-x-2">
 			<button
 				type="button"
-				on:click={() => openAuthModal('signin')}
-				class="rounded-lg border border-amber-300 px-3 py-1 text-sm font-medium text-amber-700 hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-300"
+				onclick={() => openAuthModal('signin')}
+				class="rounded-lg border border-amber-300 px-3 py-1 text-sm font-medium text-amber-700 hover:bg-amber-50 focus:ring-2 focus:ring-amber-300 focus:outline-none"
 			>
 				Sign In
 			</button>
 			<button
 				type="button"
-				on:click={() => openAuthModal('signup')}
-				class="rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-sm font-semibold text-white hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-300"
+				onclick={() => openAuthModal('signup')}
+				class="rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-sm font-semibold text-white hover:from-amber-600 hover:to-orange-600 focus:ring-2 focus:ring-amber-300 focus:outline-none"
 			>
 				Sign Up
 			</button>
@@ -104,9 +108,5 @@
 
 <!-- Close dropdown when clicking outside -->
 {#if showDropdown}
-	<div 
-		class="fixed inset-0 z-40" 
-		on:click={closeDropdown}
-		aria-hidden="true"
-	></div>
+	<div class="fixed inset-0 z-40" onclick={closeDropdown} aria-hidden="true"></div>
 {/if}
