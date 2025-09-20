@@ -90,6 +90,13 @@
 	}
 </script>
 
+<svelte:head>
+	{#if $currentRecipeStore}
+		<title>{$currentRecipeStore.title}</title>
+		<meta name="description" content={$currentRecipeStore.description} />
+	{/if}
+</svelte:head>
+
 <!-- Main Content -->
 <div class="page-container">
 	<div class="content-wrapper">

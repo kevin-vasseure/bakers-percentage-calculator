@@ -1,3 +1,4 @@
+import { replaceState } from '$app/navigation';
 import type { CurrentRecipe } from '../stores/currentRecipeStore';
 
 export function encodeRecipeToHash(recipe: CurrentRecipe): string {
@@ -73,10 +74,12 @@ export function decodeHashToRecipe(hash: string): CurrentRecipe | null {
 		const notes = notesData.replace(/%%/g, '||').replace(/\//g, '|');
 
 		return {
+			id: '',
 			title: '',
 			description: '',
 			notes,
-			ingredients: processedIngredients
+			ingredients: processedIngredients,
+			isPublic: false
 		};
 	} catch (e) {
 		console.warn('Failed to decode recipe from hash:', e);
@@ -90,6 +93,6 @@ export function updateUrlHash(recipe: CurrentRecipe): void {
 	const hash = encodeRecipeToHash(recipe);
 	if (hash) {
 		const newUrl = `${window.location.pathname}#${hash}`;
-		window.history.replaceState(null, '', newUrl);
+		replaceState(newUrl, {});
 	}
 }

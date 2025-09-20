@@ -68,12 +68,26 @@ function createCurrentRecipeStore() {
 			})),
 
 		toggleIngredientFlour: (id: number) =>
-			update((recipe) => ({
-				...recipe,
-				ingredients: recipe.ingredients.map((ing) =>
+			update((recipe) => {
+				const updatedIngredients = recipe.ingredients.map((ing) =>
 					ing.id === id ? { ...ing, isFlour: !ing.isFlour } : ing
-				)
-			})),
+				);
+
+				const flourTotal = updatedIngredients
+					.filter((ing) => ing.isFlour)
+					.reduce((sum, ing) => sum + ing.amount, 0);
+
+				// Recalculate all percentages after flour status change
+				const recalculatedIngredients = updatedIngredients.map((ing) => ({
+					...ing,
+					percentage: ing.isFlour ? 100 : flourTotal > 0 ? (ing.amount / flourTotal) * 100 : 0
+				}));
+
+				return {
+					...recipe,
+					ingredients: recalculatedIngredients
+				};
+			}),
 
 		toggleIngredientEdit: (id: number) =>
 			update((recipe) => ({
@@ -90,16 +104,58 @@ function createCurrentRecipeStore() {
 			})),
 
 		updateIngredientPercentage: (id: number, percentage: number) =>
-			update((recipe) => ({
-				...recipe,
-				ingredients: recipe.ingredients.map((ing) => (ing.id === id ? { ...ing, percentage } : ing))
-			})),
+			update((recipe) => {
+				const flourTotal = recipe.ingredients
+					.filter((ing) => ing.isFlour)
+					.reduce((sum, ing) => sum + ing.amount, 0);
+
+				const newAmount = flourTotal > 0 ? (percentage / 100) * flourTotal : 0;
+
+				return {
+					...recipe,
+					ingredients: recipe.ingredients.map((ing) =>
+						ing.id === id ? { ...ing, percentage, amount: newAmount } : ing
+					)
+				};
+			}),
 
 		updateIngredientAmount: (id: number, amount: number) =>
-			update((recipe) => ({
-				...recipe,
-				ingredients: recipe.ingredients.map((ing) => (ing.id === id ? { ...ing, amount } : ing))
-			})),
+			update((recipe) => {
+				const updatedIngredients = recipe.ingredients.map((ing) =>
+					ing.id === id ? { ...ing, amount } : ing
+				);
+
+				const updatedIngredient = recipe.ingredients.find((ing) => ing.id === id);
+
+				const flourTotal = updatedIngredients
+					.filter((ing) => ing.isFlour)
+					.reduce((sum, ing) => sum + ing.amount, 0);
+
+				// si l'ingredient mis a jour est de la farine alors on recalcul la quantité des autres ingrédients
+				const recalculatedIngredients = updatedIngredients.map((ing) => {
+					if (updatedIngredient?.isFlour) {
+						return {
+							...ing,
+							amount: ing.isFlour
+								? ing.amount
+								: flourTotal > 0
+									? (flourTotal * ing.percentage) / 100
+									: 0
+						};
+					} else {
+						// Sinon on recalcul le pourcentage de l'ingredient mis à jour
+						return {
+							...ing,
+							percentage: ing.isFlour ? 100 : flourTotal > 0 ? (ing.amount / flourTotal) * 100 : 0
+						};
+					}
+				});
+
+				return {
+					...recipe,
+					ingredients: recalculatedIngredients
+				};
+			}),
 
 		reorderIngredients: (draggedId: number, targetId: number) =>
 			update((recipe) => {
