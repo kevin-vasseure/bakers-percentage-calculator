@@ -5,8 +5,7 @@
 <div class="border-t-2 border-black bg-black px-8 py-6 text-white">
 	<div class="flex items-center justify-between">
 		<div class="flex items-center">
-			<span class="mr-3 text-2xl">⚖️</span>
-			<span class="text-lg font-semibold">Total Recipe Weight</span>
+			<span class="text-lg font-semibold">Total Weight</span>
 		</div>
 		<div class="text-right">
 			<div class="text-3xl font-bold">

@@ -58,7 +58,7 @@
 	on:drop={handleDrop}
 	on:dragend={handleDragEnd}
 >
-	<!-- Drag Handle & Ingredient Name (Editable) -->
+	<!-- Drag Handle & Ingredient Name -->
 	<td class="ingredient-cell">
 		<div class="flex items-center">
 			<div class="drag-handle">
@@ -77,60 +77,40 @@
 					/>
 				</svg>
 			</div>
-			<div class="flex-1">
-				{#if ingredient.isEditing}
-					<input
-						type="text"
-						class="ingredient-input"
-						value={ingredient.name}
-						on:blur={() => currentRecipeStore.toggleIngredientEdit(ingredient.id)}
-						on:keydown={(e) =>
-							e.key === 'Enter' && currentRecipeStore.toggleIngredientEdit(ingredient.id)}
-						on:input={(e) =>
-							currentRecipeStore.updateIngredientName(
-								ingredient.id,
-								(e.target as HTMLInputElement).value
-							)}
-						aria-label="Edit ingredient name"
-					/>
-				{:else}
-					<div class="flex items-center gap-2">
-						<button
-							type="button"
-							class="ingredient-name-button flex-1"
-							on:click|stopPropagation={() =>
-								currentRecipeStore.toggleIngredientEdit(ingredient.id)}
-							on:keydown={(e) =>
-								e.key === 'Enter' && currentRecipeStore.toggleIngredientEdit(ingredient.id)}
-							aria-label={`Edit ${ingredient.name || 'ingredient'}`}
-						>
-							{ingredient.name || 'Click to edit'}
-							<span class="edit-icon">✏️</span>
-						</button>
-
-						<!-- Inline Flour Badge Toggle -->
-						<button
-							type="button"
-							class="flour-badge-toggle {ingredient.isFlour
-								? flourCount === 1
-									? 'flour-badge-toggle--disabled'
-									: 'flour-badge-toggle--active'
-								: 'flour-badge-toggle--inactive'}"
-							disabled={ingredient.isFlour && flourCount === 1}
-							on:click|stopPropagation={() =>
-								!(ingredient.isFlour && flourCount === 1) &&
-								currentRecipeStore.toggleIngredientFlour(ingredient.id)}
-							aria-label={ingredient.isFlour && flourCount === 1
-								? 'Cannot remove - at least one flour base is required'
-								: ingredient.isFlour
-									? `Remove ${ingredient.name} as flour base`
-									: `Set ${ingredient.name || 'ingredient'} as flour base`}
-							title={ingredient.isFlour ? 'Flour Base' : 'Click to make flour base'}
-						>
-							F
-						</button>
-					</div>
-				{/if}
+			<div class="flex flex-1 items-center gap-2">
+				<input
+					type="text"
+					class="ingredient-input flex-1"
+					value={ingredient.name}
+					placeholder="Ingredient name"
+					on:input={(e) =>
+						currentRecipeStore.updateIngredientName(
+							ingredient.id,
+							(e.target as HTMLInputElement).value
+						)}
+					aria-label="Ingredient name"
+				/>
+				<!-- Inline Flour Badge Toggle -->
+				<button
+					type="button"
+					class="flour-badge-toggle {ingredient.isFlour
+						? flourCount === 1
+							? 'flour-badge-toggle--disabled'
+							: 'flour-badge-toggle--active'
+						: 'flour-badge-toggle--inactive'}"
+					disabled={ingredient.isFlour && flourCount === 1}
+					on:click|stopPropagation={() =>
+						!(ingredient.isFlour && flourCount === 1) &&
+						currentRecipeStore.toggleIngredientFlour(ingredient.id)}
+					aria-label={ingredient.isFlour && flourCount === 1
+						? 'Cannot remove - at least one flour base is required'
+						: ingredient.isFlour
+							? `Remove ${ingredient.name} as flour base`
+							: `Set ${ingredient.name || 'ingredient'} as flour base`}
+					title={ingredient.isFlour ? 'Flour Base' : 'Click to make flour base'}
+				>
+					F
+				</button>
 			</div>
 		</div>
 	</td>

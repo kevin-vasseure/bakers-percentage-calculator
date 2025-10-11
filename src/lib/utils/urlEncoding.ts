@@ -50,8 +50,7 @@ export function decodeHashToRecipe(hash: string): CurrentRecipe | null {
 					name: name.replace(/;/g, ',').replace(/\//g, '|'), // Unescape delimiters
 					isFlour,
 					amount: isFlour ? numValue : 0, // Non-flour amounts calculated later
-					percentage: isFlour ? 100 : numValue,
-					isEditing: false
+					percentage: isFlour ? 100 : numValue
 				};
 			});
 
@@ -79,7 +78,8 @@ export function decodeHashToRecipe(hash: string): CurrentRecipe | null {
 			description: '',
 			notes,
 			ingredients: processedIngredients,
-			isPublic: false
+			isPublic: false,
+			viewMode: true
 		};
 	} catch (e) {
 		console.warn('Failed to decode recipe from hash:', e);

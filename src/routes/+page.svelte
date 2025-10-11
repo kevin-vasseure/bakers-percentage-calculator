@@ -5,7 +5,6 @@
 		currentRecipeStore,
 		currentIngredients,
 		currentNotes,
-		hasEditingIngredient,
 		type CurrentRecipe
 	} from '$lib/stores/currentRecipeStore';
 	import { decodeHashToRecipe, updateUrlHash } from '$lib/utils/urlEncoding';
@@ -18,6 +17,7 @@
 	import RecipeList from '$lib/components/RecipeList.svelte';
 	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
 	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
+	import ViewModeToggle from '$lib/components/ViewModeToggle.svelte';
 	import { recipesStore, type RecipeWithIngredients } from '$lib/stores/recipesStore';
 
 	let showAuthModal = false;
@@ -36,8 +36,7 @@
 			...ing,
 			isFlour: ing.isFlour,
 			amount: Number(ing.amount) || 0,
-			percentage: Number(ing.percentage) || 0,
-			isEditing: false
+			percentage: Number(ing.percentage) || 0
 		}));
 
 		// Update the unified recipe store with all recipe data
@@ -47,7 +46,8 @@
 			description: recipe.description || '',
 			notes: recipe.notes || '',
 			ingredients: convertedIngredients,
-			isPublic: recipe.is_public || false
+			isPublic: recipe.is_public || false,
+			viewMode: true
 		});
 
 		currentRecipeStore.setNextId(Math.max(...convertedIngredients.map((ing) => ing.id)) + 1);
@@ -82,11 +82,9 @@
 		}
 	});
 
-	// Update URL hash when recipe changes (but not when editing)
+	// Update URL hash when recipe changes
 	$: if (browser && $currentIngredients.length > 0) {
-		if (!$hasEditingIngredient) {
-			setTimeout(() => updateUrlHash($currentRecipeStore), 100);
-		}
+		setTimeout(() => updateUrlHash($currentRecipeStore), 100);
 	}
 </script>
 
@@ -105,8 +103,12 @@
 				<header class="header-section">
 					<div class="flex items-center justify-center">
 						<div>
-							<h1 class="app-title">Baker's Percentage Calculator</h1>
-							<p class="app-subtitle">Calculate perfect bread ratios with ease</p>
+							<h1 class="app-title">Baker's Percentage Calculator: {$currentRecipeStore.title}</h1>
+							<p class="app-subtitle">
+								{$currentRecipeStore.description === ''
+									? 'Calculate perfect dough percentages'
+									: $currentRecipeStore.description}
+							</p>
 						</div>
 					</div>
 				</header>
@@ -116,28 +118,30 @@
 				<!-- Add Ingredient Button -->
 				<div class="add-ingredient-section">
 					<div class="button-group">
-						<button
-							type="button"
-							onclick={() => currentRecipeStore.addIngredient()}
-							class="primary-button"
-							aria-label="Add new ingredient"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="button-icon"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
+						{#if !$currentRecipeStore.viewMode}
+							<button
+								type="button"
+								onclick={() => currentRecipeStore.addIngredient()}
+								class="primary-button"
+								aria-label="Add new ingredient"
 							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 4v16m8-8H4"
-								/>
-							</svg>
-							Add New Ingredient
-						</button>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="button-icon"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 4v16m8-8H4"
+									/>
+								</svg>
+								Add New Ingredient
+							</button>
+						{/if}
 
 						<ShareButton />
 					</div>
@@ -200,3 +204,6 @@
 <!-- Modals -->
 <AuthModal bind:isOpen={showAuthModal} mode={authMode} />
 <SaveRecipeModal bind:isOpen={showSaveModal} ingredients={$currentIngredients} />
+
+<!-- Floating View/Edit Toggle Button -->
+<ViewModeToggle />

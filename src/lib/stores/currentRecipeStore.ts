@@ -8,15 +8,22 @@ export interface CurrentRecipe {
 	notes: string;
 	ingredients: Ingredient[];
 	isPublic: boolean;
+	viewMode: boolean;
 }
 
 const initialRecipe: CurrentRecipe = {
 	id: '',
-	title: '',
-	description: '',
+	title: 'Neapolitan Pizza',
+	description: 'Default recipe',
 	notes: '',
-	ingredients: [],
-	isPublic: false
+	ingredients: [
+		{ id: 1, name: 'Flour', isFlour: true, amount: 1000, percentage: 100 },
+		{ id: 2, name: 'Water', isFlour: false, amount: 600, percentage: 60 },
+		{ id: 3, name: 'Salt', isFlour: false, amount: 30, percentage: 3 },
+		{ id: 4, name: 'Yeast', isFlour: false, amount: 2, percentage: 0.2 }
+	],
+	isPublic: false,
+	viewMode: false
 };
 
 // Main recipe store
@@ -24,7 +31,7 @@ function createCurrentRecipeStore() {
 	const { subscribe, set, update } = writable<CurrentRecipe>(initialRecipe);
 
 	// ID counter for new ingredients
-	let nextId = 1;
+	let nextId = 5;
 
 	return {
 		subscribe,
@@ -35,6 +42,7 @@ function createCurrentRecipeStore() {
 		setTitle: (title: string) => update((recipe) => ({ ...recipe, title })),
 		setDescription: (description: string) => update((recipe) => ({ ...recipe, description })),
 		setNotes: (notes: string) => update((recipe) => ({ ...recipe, notes })),
+		toggleViewMode: () => update((recipe) => ({ ...recipe, viewMode: !recipe.viewMode })),
 
 		// Ingredient methods (migrated from ingredientsStore)
 		setIngredients: (ingredients: Ingredient[]) => update((recipe) => ({ ...recipe, ingredients })),
@@ -49,8 +57,7 @@ function createCurrentRecipeStore() {
 						name: '',
 						isFlour: false,
 						amount: 0,
-						percentage: 0,
-						isEditing: true
+						percentage: 0
 					}
 				]
 			})),
@@ -88,14 +95,6 @@ function createCurrentRecipeStore() {
 					ingredients: recalculatedIngredients
 				};
 			}),
-
-		toggleIngredientEdit: (id: number) =>
-			update((recipe) => ({
-				...recipe,
-				ingredients: recipe.ingredients.map((ing) =>
-					ing.id === id ? { ...ing, isEditing: !ing.isEditing } : ing
-				)
-			})),
 
 		updateIngredientName: (id: number, name: string) =>
 			update((recipe) => ({
@@ -200,8 +199,4 @@ export const flourCount = derived(
 
 export const totalWeight = derived(currentRecipeStore, ($recipe) =>
 	$recipe.ingredients.reduce((sum, ing) => sum + ing.amount, 0)
-);
-
-export const hasEditingIngredient = derived(currentRecipeStore, ($recipe) =>
-	$recipe.ingredients.some((ing) => ing.isEditing)
 );

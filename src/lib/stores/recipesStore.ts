@@ -87,8 +87,7 @@ function createRecipesStore() {
 						name: ing.name,
 						isFlour: ing.is_flour || false,
 						amount: Number(ing.amount) || 0,
-						percentage: Number(ing.percentage) || 0,
-						isEditing: false
+						percentage: Number(ing.percentage) || 0
 					}))
 			}));
 
