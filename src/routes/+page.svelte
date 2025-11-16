@@ -116,9 +116,9 @@
 				<IngredientTable />
 
 				<!-- Add Ingredient Button -->
-				<div class="add-ingredient-section">
-					<div class="button-group">
-						{#if !$currentRecipeStore.viewMode}
+				{#if !$currentRecipeStore.viewMode}
+					<div class="add-ingredient-section">
+						<div class="button-group">
 							<button
 								type="button"
 								onclick={() => currentRecipeStore.addIngredient()}
@@ -141,13 +141,13 @@
 								</svg>
 								Add New Ingredient
 							</button>
-						{/if}
-
-						<ShareButton />
+						</div>
 					</div>
-				</div>
+				{/if}
 
 				<TotalWeight />
+
+				<ShareButton />
 
 				<!-- Recipe Notes Section -->
 				<div class="border-t-2 border-black bg-white px-8 py-6">
