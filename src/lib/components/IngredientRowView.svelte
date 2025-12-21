@@ -2,6 +2,7 @@
 	import type { Ingredient } from '../stores/ingredientsStore';
 
 	export let ingredient: Ingredient;
+	export let totalFlourWeight: number = 0;
 </script>
 
 <tr class="ingredient-row-view">
@@ -17,7 +18,15 @@
 		<span class="amount-view">{ingredient.amount}<span class="unit-view">g</span></span>
 	</td>
 	<td class="ingredient-cell-view--right">
-		<span class="percentage-view">{ingredient.percentage.toFixed(1)}%</span>
+		<span class="percentage-view">
+			{#if ingredient.isFlour}
+				{totalFlourWeight > 0
+					? ((ingredient.amount / totalFlourWeight) * 100).toFixed(1)
+					: '100.0'}%
+			{:else}
+				{ingredient.percentage.toFixed(1)}%
+			{/if}
+		</span>
 	</td>
 </tr>
 
@@ -53,7 +62,7 @@
 		justify-content: center;
 		width: 1.25rem;
 		height: 1.25rem;
-		background-color: #fbbf24;
+		background-color: black;
 		color: #ffffff;
 		border-radius: 0.25rem;
 		font-size: 0.65rem;

@@ -6,6 +6,7 @@
 
 	export let ingredient: Ingredient;
 	export let flourCount: number;
+	export let totalFlourWeight: number = 0;
 
 	$: isDragged = $dragDropStore.draggedId === ingredient.id;
 	$: isDragOver = $dragDropStore.dragOverId === ingredient.id;
@@ -195,7 +196,7 @@
 			{ingredient.amount}<span class="unit-edit">g</span>
 		</button>
 	</td>
-	<td class="ingredient-cell-edit--right">
+	<td class="ingredient-cell-edit--right"> </td><td class="ingredient-cell-edit--right">
 		{#if !ingredient.isFlour}
 			<button
 				type="button"
@@ -205,7 +206,11 @@
 				{ingredient.percentage.toFixed(1)}%
 			</button>
 		{:else}
-			<span class="percentage-edit-disabled">100%</span>
+			<span class="percentage-edit-disabled">
+				{totalFlourWeight > 0
+					? ((ingredient.amount / totalFlourWeight) * 100).toFixed(1)
+					: '100.0'}%
+			</span>
 		{/if}
 	</td>
 </tr>
@@ -275,6 +280,7 @@
 		padding: 0.25rem 0.5rem;
 		border-radius: 0.25rem;
 		margin: -0.25rem -0.5rem;
+		border-bottom: 2px dashed #e5e7eb;
 	}
 
 	.editable-field:hover {
@@ -312,12 +318,12 @@
 	}
 
 	.flour-badge-edit--active {
-		background-color: #fbbf24;
+		background-color: black;
 		color: #ffffff;
 	}
 
 	.flour-badge-edit--active:hover {
-		background-color: #f59e0b;
+		background-color: black;
 	}
 
 	.flour-badge-edit--inactive {
@@ -326,12 +332,12 @@
 	}
 
 	.flour-badge-edit--inactive:hover {
-		background-color: #fbbf24;
+		background-color: black;
 		color: #ffffff;
 	}
 
 	.flour-badge-edit--disabled {
-		background-color: #fbbf24;
+		background-color: black;
 		color: #ffffff;
 		opacity: 0.5;
 		cursor: not-allowed;
@@ -341,7 +347,6 @@
 		background: none;
 		border: none;
 		cursor: pointer;
-		color: #ef4444;
 		padding: 0.25rem;
 		border-radius: 0.25rem;
 		transition: all 0.2s;
@@ -349,7 +354,7 @@
 	}
 
 	.remove-button-edit:hover {
-		background-color: #fee2e2;
+		background-color: #e5e7eb;
 	}
 
 	.remove-icon {

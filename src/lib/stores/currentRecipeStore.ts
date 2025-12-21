@@ -76,19 +76,38 @@ function createCurrentRecipeStore() {
 
 		toggleIngredientFlour: (id: number) =>
 			update((recipe) => {
-				const updatedIngredients = recipe.ingredients.map((ing) =>
+				// 1. Update the toggled ingredient's status first
+				const statusUpdatedIngredients = recipe.ingredients.map((ing) =>
 					ing.id === id ? { ...ing, isFlour: !ing.isFlour } : ing
 				);
 
-				const flourTotal = updatedIngredients
+				// 2. Calculate the NEW total flour weight
+				const newFlourTotal = statusUpdatedIngredients
 					.filter((ing) => ing.isFlour)
 					.reduce((sum, ing) => sum + ing.amount, 0);
 
-				// Recalculate all percentages after flour status change
-				const recalculatedIngredients = updatedIngredients.map((ing) => ({
-					...ing,
-					percentage: ing.isFlour ? 100 : flourTotal > 0 ? (ing.amount / flourTotal) * 100 : 0
-				}));
+				// 3. Recalculate amounts/percentages
+				const recalculatedIngredients = statusUpdatedIngredients.map((ing) => {
+					if (ing.isFlour) {
+						// For flour (including the newly toggled one), amount stays, percentage is reset/calc in UI
+						return { ...ing, percentage: 100 };
+					} else {
+						// For non-flour ingredients:
+						if (ing.id === id) {
+							// If this IS the toggled ingredient (was flour, now isn't), amount stays, calc new percentage
+							return {
+								...ing,
+								percentage: newFlourTotal > 0 ? (ing.amount / newFlourTotal) * 100 : 0
+							};
+						} else {
+							// For OTHER non-flour ingredients, preserve PERCENTAGE, calc new AMOUNT
+							return {
+								...ing,
+								amount: (newFlourTotal * ing.percentage) / 100
+							};
+						}
+					}
+				});
 
 				return {
 					...recipe,
@@ -168,6 +187,24 @@ function createCurrentRecipeStore() {
 				ingredients.splice(targetIndex, 0, draggedItem);
 
 				return { ...recipe, ingredients };
+			}),
+
+		setTotalWeight: (newTotal: number) =>
+			update((recipe) => {
+				const currentTotal = recipe.ingredients.reduce((sum, ing) => sum + ing.amount, 0);
+				if (currentTotal === 0 || newTotal < 0) return recipe;
+
+				const ratio = newTotal / currentTotal;
+
+				const scaledIngredients = recipe.ingredients.map((ing) => ({
+					...ing,
+					amount: Math.round(ing.amount * ratio * 10) / 10
+				}));
+
+				return {
+					...recipe,
+					ingredients: scaledIngredients
+				};
 			}),
 
 		// Utility methods
