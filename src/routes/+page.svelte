@@ -20,10 +20,10 @@
 	import ViewModeToggle from '$lib/components/ViewModeToggle.svelte';
 	import { recipesStore, type RecipeWithIngredients } from '$lib/stores/recipesStore';
 
-	let showAuthModal = false;
-	let authMode: 'signin' | 'signup' = 'signin';
-	let showSaveModal = false;
-	let showRecipeList = false;
+	let showAuthModal = $state(false);
+	let authMode: 'signin' | 'signup' = $state('signin');
+	let showSaveModal = $state(false);
+	let showRecipeList = $state(false);
 
 	function handleOpenAuth(event: { mode: 'signin' | 'signup' }) {
 		authMode = event.mode;
@@ -83,9 +83,11 @@
 	});
 
 	// Update URL hash when recipe changes
-	$: if (browser && $currentIngredients.length > 0) {
-		setTimeout(() => updateUrlHash($currentRecipeStore), 100);
-	}
+	$effect(() => {
+		if (browser && $currentIngredients.length > 0) {
+			setTimeout(() => updateUrlHash($currentRecipeStore), 100);
+		}
+	});
 </script>
 
 <svelte:head>

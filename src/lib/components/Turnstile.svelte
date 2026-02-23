@@ -2,11 +2,19 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 
-	export let siteKey: string;
-	export let onVerify: (token: string) => void;
-	export let onError: () => void = () => {};
-	export let theme: 'light' | 'dark' | 'auto' = 'auto';
-	export let size: 'normal' | 'compact' = 'normal';
+	let {
+		siteKey,
+		onVerify,
+		onError = () => {},
+		theme = 'auto',
+		size = 'normal'
+	}: {
+		siteKey: string;
+		onVerify: (token: string) => void;
+		onError?: () => void;
+		theme?: 'light' | 'dark' | 'auto';
+		size?: 'normal' | 'compact';
+	} = $props();
 
 	let turnstileDiv: HTMLDivElement;
 	let widgetId: string | null = null;

@@ -2,13 +2,15 @@
 	import { authStore } from '$lib/stores/authStore';
 	import { onMount } from 'svelte';
 
-	export let onOpenAuth: ((event: { mode: 'signin' | 'signup' }) => void) | undefined = undefined;
-	export let onOpenRecipes: (() => void) | undefined = undefined;
+	let {
+		onOpenAuth = undefined as ((event: { mode: 'signin' | 'signup' }) => void) | undefined,
+		onOpenRecipes = undefined as (() => void) | undefined
+	} = $props();
 
-	let showUserMenu = false;
+	let showUserMenu = $state(false);
 
-	$: user = $authStore.user;
-	$: loading = $authStore.loading;
+	let user = $derived($authStore.user);
+	let loading = $derived($authStore.loading);
 
 	onMount(() => {
 		authStore.initialize();

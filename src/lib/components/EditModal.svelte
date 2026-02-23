@@ -1,23 +1,26 @@
 <script lang="ts">
-	export let isOpen = false;
-	export let value: string | number = '';
-	export let label: string = '';
-	export let type: 'text' | 'number' = 'text';
-	export let unit: string = '';
-	export let onSave: (value: string | number) => void = () => {};
-	export let onClose: () => void = () => {};
+	let {
+		isOpen = false,
+		value = '' as string | number,
+		label = '',
+		type = 'text' as 'text' | 'number',
+		unit = '',
+		onSave = (_value: string | number) => {},
+		onClose = () => {}
+	} = $props();
 
-	let inputValue = value;
+	let inputValue = $state(value);
 	let inputElement: HTMLInputElement;
 
-	$: if (isOpen) {
-		inputValue = value;
-		// Focus input when modal opens
-		setTimeout(() => {
-			inputElement?.focus();
-			inputElement?.select();
-		}, 10);
-	}
+	$effect(() => {
+		if (isOpen) {
+			inputValue = value;
+			setTimeout(() => {
+				inputElement?.focus();
+				inputElement?.select();
+			}, 10);
+		}
+	});
 
 	function handleSave() {
 		onSave(inputValue);
@@ -46,7 +49,7 @@
 </script>
 
 {#if isOpen}
-	<div class="edit-modal-backdrop" on:click={handleBackdropClick} role="presentation">
+	<div class="edit-modal-backdrop" onclick={handleBackdropClick} role="presentation">
 		<div class="edit-modal-container">
 			<div class="modal-header">
 				<h3 class="modal-title">{label}</h3>
@@ -58,7 +61,7 @@
 						bind:value={inputValue}
 						{type}
 						class="modal-input"
-						on:keydown={handleKeydown}
+						onkeydown={handleKeydown}
 						step={type === 'number' ? '0.1' : undefined}
 						min={type === 'number' ? '0' : undefined}
 					/>
@@ -68,10 +71,10 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="modal-button modal-button--cancel" on:click={handleClose}>
+				<button type="button" class="modal-button modal-button--cancel" onclick={handleClose}>
 					Cancel
 				</button>
-				<button type="button" class="modal-button modal-button--save" on:click={handleSave}>
+				<button type="button" class="modal-button modal-button--save" onclick={handleSave}>
 					Save
 				</button>
 			</div>

@@ -4,20 +4,18 @@
 	import { dragDropStore } from '../stores/dragDropStore';
 	import EditModal from './EditModal.svelte';
 
-	export let ingredient: Ingredient;
-	export let flourCount: number;
-	export let totalFlourWeight: number = 0;
+	let { ingredient, flourCount, totalFlourWeight = 0 }: { ingredient: Ingredient; flourCount: number; totalFlourWeight?: number } = $props();
 
-	$: isDragged = $dragDropStore.draggedId === ingredient.id;
-	$: isDragOver = $dragDropStore.dragOverId === ingredient.id;
+	let isDragged = $derived($dragDropStore.draggedId === ingredient.id);
+	let isDragOver = $derived($dragDropStore.dragOverId === ingredient.id);
 
 	// Modal state
-	let modalOpen = false;
-	let modalField: 'name' | 'amount' | 'percentage' | null = null;
-	let modalValue: string | number = '';
-	let modalLabel = '';
-	let modalType: 'text' | 'number' = 'text';
-	let modalUnit = '';
+	let modalOpen = $state(false);
+	let modalField: 'name' | 'amount' | 'percentage' | null = $state(null);
+	let modalValue: string | number = $state('');
+	let modalLabel = $state('');
+	let modalType: 'text' | 'number' = $state('text');
+	let modalUnit = $state('');
 
 	function handleDragStart(e: DragEvent): void {
 		if (e.dataTransfer) {
@@ -123,11 +121,11 @@
 	class="ingredient-row-edit {isDragged ? 'ingredient-row-edit--dragged' : ''} {isDragOver
 		? 'ingredient-row-edit--drag-over'
 		: ''}"
-	on:dragstart={handleDragStart}
-	on:dragover={handleDragOver}
-	on:dragleave={handleDragLeave}
-	on:drop={handleDrop}
-	on:dragend={handleDragEnd}
+	ondragstart={handleDragStart}
+	ondragover={handleDragOver}
+	ondragleave={handleDragLeave}
+	ondrop={handleDrop}
+	ondragend={handleDragEnd}
 >
 	<td class="ingredient-cell-edit">
 		<div class="flex items-center gap-2">
@@ -150,7 +148,7 @@
 			<button
 				type="button"
 				class="ingredient-name-edit editable-field"
-				on:click={() => openModal('name')}
+				onclick={() => openModal('name')}
 			>
 				{ingredient.name || 'Tap to edit'}
 			</button>
@@ -162,7 +160,7 @@
 						: 'flour-badge-edit--active'
 					: 'flour-badge-edit--inactive'}"
 				disabled={ingredient.isFlour && flourCount === 1}
-				on:click={handleToggleFlour}
+				onclick={handleToggleFlour}
 				title={ingredient.isFlour ? 'Flour Base' : 'Click to make flour base'}
 			>
 				F
@@ -171,7 +169,7 @@
 				aria-label="remove ingredient"
 				type="button"
 				class="remove-button-edit"
-				on:click={handleRemove}
+				onclick={handleRemove}
 				title="Remove"
 			>
 				<svg
@@ -192,7 +190,7 @@
 		</div>
 	</td>
 	<td class="ingredient-cell-edit--right">
-		<button type="button" class="amount-edit editable-field" on:click={() => openModal('amount')}>
+		<button type="button" class="amount-edit editable-field" onclick={() => openModal('amount')}>
 			{ingredient.amount}<span class="unit-edit">g</span>
 		</button>
 	</td>
@@ -201,7 +199,7 @@
 			<button
 				type="button"
 				class="percentage-edit editable-field"
-				on:click={() => openModal('percentage')}
+				onclick={() => openModal('percentage')}
 			>
 				{ingredient.percentage.toFixed(1)}%
 			</button>

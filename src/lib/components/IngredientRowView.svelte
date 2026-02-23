@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Ingredient } from '../stores/ingredientsStore';
 
-	export let ingredient: Ingredient;
-	export let totalFlourWeight: number = 0;
+	let { ingredient, totalFlourWeight = 0 }: { ingredient: Ingredient; totalFlourWeight?: number } = $props();
 </script>
 
 <tr class="ingredient-row-view">

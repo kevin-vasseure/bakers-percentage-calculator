@@ -2,9 +2,11 @@
 	import { Editor } from 'bytemd';
 	import gfm from '@bytemd/plugin-gfm';
 
-	export let value: string = '';
-	export let placeholder: string = 'Write your recipe notes in markdown...';
-	export let onchange: ((value: string) => void) | undefined = undefined;
+	let {
+		value = '',
+		placeholder = 'Write your recipe notes in markdown...',
+		onchange = undefined as ((value: string) => void) | undefined
+	} = $props();
 
 	const plugins = [gfm()];
 

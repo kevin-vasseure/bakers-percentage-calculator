@@ -3,18 +3,20 @@
 	import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import Turnstile from './Turnstile.svelte';
 
-	export let isOpen = false;
-	export let mode: 'signin' | 'signup' = 'signin';
-	export let onClose: (() => void) | undefined = undefined;
+	let {
+		isOpen = $bindable(false),
+		mode = $bindable('signin' as 'signin' | 'signup'),
+		onClose = undefined as (() => void) | undefined
+	} = $props();
 
-	let email = '';
-	let password = '';
-	let fullName = '';
-	let confirmPassword = '';
-	let loading = false;
-	let error = '';
-	let message = '';
-	let turnstileToken = '';
+	let email = $state('');
+	let password = $state('');
+	let fullName = $state('');
+	let confirmPassword = $state('');
+	let loading = $state(false);
+	let error = $state('');
+	let message = $state('');
+	let turnstileToken = $state('');
 	let turnstileRef: Turnstile;
 
 	function closeModal() {
@@ -114,7 +116,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleKeyDown} />
+<svelte:window onkeydown={handleKeyDown} />
 
 {#if isOpen}
 	<div class="fixed inset-0 z-50">

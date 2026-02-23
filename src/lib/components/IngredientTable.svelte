@@ -3,10 +3,10 @@
 	import IngredientRowView from './IngredientRowView.svelte';
 	import IngredientRowEdit from './IngredientRowEdit.svelte';
 
-	$: viewMode = $currentRecipeStore.viewMode;
-	$: totalFlourWeight = $currentIngredients
+	let viewMode = $derived($currentRecipeStore.viewMode);
+	let totalFlourWeight = $derived($currentIngredients
 		.filter((i) => i.isFlour)
-		.reduce((sum, i) => sum + i.amount, 0);
+		.reduce((sum, i) => sum + i.amount, 0));
 </script>
 
 <div class="ingredient-table-container overflow-x-auto">

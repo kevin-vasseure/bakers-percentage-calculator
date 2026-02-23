@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { currentRecipeStore } from '../stores/currentRecipeStore';
 
-	$: viewMode = $currentRecipeStore.viewMode;
+	let viewMode = $derived($currentRecipeStore.viewMode);
 
 	function toggleMode() {
 		currentRecipeStore.toggleViewMode();

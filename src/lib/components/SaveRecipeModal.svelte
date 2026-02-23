@@ -3,15 +3,17 @@
 	import { currentNotes } from '$lib/stores/currentRecipeStore';
 	import type { Ingredient } from '$lib/stores/ingredientsStore';
 
-	export let isOpen = false;
-	export let ingredients: Ingredient[] = [];
-	export let onClose: (() => void) | undefined = undefined;
+	let {
+		isOpen = $bindable(false),
+		ingredients = [] as Ingredient[],
+		onClose = undefined as (() => void) | undefined
+	} = $props();
 
-	let title = '';
-	let description = '';
-	let isPublic = false;
-	let loading = false;
-	let error = '';
+	let title = $state('');
+	let description = $state('');
+	let isPublic = $state(false);
+	let loading = $state(false);
+	let error = $state('');
 
 	function closeModal() {
 		isOpen = false;
@@ -76,7 +78,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleKeyDown} />
+<svelte:window onkeydown={handleKeyDown} />
 
 {#if isOpen}
 	<div class="fixed inset-0 z-50">
