@@ -14,16 +14,16 @@
 		</div>
 	</td>
 	<td class="ingredient-cell-view--right">
-		<span class="amount-view">{ingredient.amount}<span class="unit-view">g</span></span>
+		<span class="amount-view">{ingredient.amount.toFixed(2)}<span class="unit-view">g</span></span>
 	</td>
 	<td class="ingredient-cell-view--right">
 		<span class="percentage-view">
 			{#if ingredient.isFlour}
 				{totalFlourWeight > 0
-					? ((ingredient.amount / totalFlourWeight) * 100).toFixed(1)
-					: '100.0'}%
+					? ((ingredient.amount / totalFlourWeight) * 100).toFixed(2)
+					: '100.00'}%
 			{:else}
-				{ingredient.percentage.toFixed(1)}%
+				{ingredient.percentage.toFixed(2)}%
 			{/if}
 		</span>
 	</td>

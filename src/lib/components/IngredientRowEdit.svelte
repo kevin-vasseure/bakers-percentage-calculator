@@ -191,7 +191,7 @@
 	</td>
 	<td class="ingredient-cell-edit--right">
 		<button type="button" class="amount-edit editable-field" onclick={() => openModal('amount')}>
-			{ingredient.amount}<span class="unit-edit">g</span>
+			{ingredient.amount.toFixed(2)}<span class="unit-edit">g</span>
 		</button>
 	</td>
 	<td class="ingredient-cell-edit--right"> </td><td class="ingredient-cell-edit--right">
@@ -201,13 +201,13 @@
 				class="percentage-edit editable-field"
 				onclick={() => openModal('percentage')}
 			>
-				{ingredient.percentage.toFixed(1)}%
+				{ingredient.percentage.toFixed(2)}%
 			</button>
 		{:else}
 			<span class="percentage-edit-disabled">
 				{totalFlourWeight > 0
-					? ((ingredient.amount / totalFlourWeight) * 100).toFixed(1)
-					: '100.0'}%
+					? ((ingredient.amount / totalFlourWeight) * 100).toFixed(2)
+					: '100.00'}%
 			</span>
 		{/if}
 	</td>
