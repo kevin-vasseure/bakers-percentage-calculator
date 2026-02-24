@@ -65,6 +65,12 @@
 		showSaveModal = true;
 	}
 
+	function handleLoadDefault() {
+		if (confirm('Load default recipe? This will replace the current recipe.')) {
+			currentRecipeStore.reset();
+		}
+	}
+
 	// Initialize from URL on mount
 	onMount(() => {
 		if (!browser) return;
@@ -142,6 +148,14 @@
 									/>
 								</svg>
 								Add New Ingredient
+							</button>
+							<button
+								type="button"
+								onclick={handleLoadDefault}
+								class="secondary-button"
+								aria-label="Load default recipe"
+							>
+								Load Default Recipe
 							</button>
 						</div>
 					</div>

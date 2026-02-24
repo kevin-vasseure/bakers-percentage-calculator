@@ -12,11 +12,17 @@
 <div class="ingredient-table-container overflow-x-auto">
 	<table class="ingredient-table">
 		<tbody class="table-body">
-			{#each $currentIngredients as ingredient (ingredient.id)}
+			{#each $currentIngredients as ingredient, i (ingredient.id)}
 				{#if viewMode}
 					<IngredientRowView {ingredient} {totalFlourWeight} />
 				{:else}
-					<IngredientRowEdit {ingredient} flourCount={$flourCount} {totalFlourWeight} />
+					<IngredientRowEdit
+						{ingredient}
+						flourCount={$flourCount}
+						{totalFlourWeight}
+						isFirst={i === 0}
+						isLast={i === $currentIngredients.length - 1}
+					/>
 				{/if}
 			{/each}
 		</tbody>

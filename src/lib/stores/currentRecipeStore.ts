@@ -189,6 +189,24 @@ function createCurrentRecipeStore() {
 				return { ...recipe, ingredients };
 			}),
 
+		moveIngredientUp: (id: number) =>
+			update((recipe) => {
+				const ingredients = [...recipe.ingredients];
+				const index = ingredients.findIndex((ing) => ing.id === id);
+				if (index <= 0) return recipe;
+				[ingredients[index - 1], ingredients[index]] = [ingredients[index], ingredients[index - 1]];
+				return { ...recipe, ingredients };
+			}),
+
+		moveIngredientDown: (id: number) =>
+			update((recipe) => {
+				const ingredients = [...recipe.ingredients];
+				const index = ingredients.findIndex((ing) => ing.id === id);
+				if (index === -1 || index >= ingredients.length - 1) return recipe;
+				[ingredients[index], ingredients[index + 1]] = [ingredients[index + 1], ingredients[index]];
+				return { ...recipe, ingredients };
+			}),
+
 		setTotalWeight: (newTotal: number) =>
 			update((recipe) => {
 				const currentTotal = recipe.ingredients.reduce((sum, ing) => sum + ing.amount, 0);
@@ -215,7 +233,7 @@ function createCurrentRecipeStore() {
 		// Reset to initial state
 		reset: () => {
 			set(initialRecipe);
-			nextId = 1;
+			nextId = 5;
 		}
 	};
 }

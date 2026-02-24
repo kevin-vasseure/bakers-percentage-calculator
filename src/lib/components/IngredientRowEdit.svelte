@@ -4,7 +4,13 @@
 	import { dragDropStore } from '../stores/dragDropStore';
 	import EditModal from './EditModal.svelte';
 
-	let { ingredient, flourCount, totalFlourWeight = 0 }: { ingredient: Ingredient; flourCount: number; totalFlourWeight?: number } = $props();
+	let { ingredient, flourCount, totalFlourWeight = 0, isFirst = false, isLast = false }: {
+		ingredient: Ingredient;
+		flourCount: number;
+		totalFlourWeight?: number;
+		isFirst?: boolean;
+		isLast?: boolean;
+	} = $props();
 
 	let isDragged = $derived($dragDropStore.draggedId === ingredient.id);
 	let isDragOver = $derived($dragDropStore.dragOverId === ingredient.id);
@@ -52,6 +58,14 @@
 
 	function handleDragEnd(): void {
 		dragDropStore.endDrag();
+	}
+
+	function handleMoveUp() {
+		currentRecipeStore.moveIngredientUp(ingredient.id);
+	}
+
+	function handleMoveDown() {
+		currentRecipeStore.moveIngredientDown(ingredient.id);
 	}
 
 	function openModal(field: 'name' | 'amount' | 'percentage') {
@@ -129,6 +143,7 @@
 >
 	<td class="ingredient-cell-edit">
 		<div class="flex items-center gap-2">
+			<!-- Drag handle — desktop only -->
 			<div class="drag-handle">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -144,6 +159,31 @@
 						d="M4 8h16M4 16h16"
 					/>
 				</svg>
+			</div>
+			<!-- Up/Down buttons — mobile only -->
+			<div class="mobile-reorder">
+				<button
+					type="button"
+					class="move-btn"
+					onclick={handleMoveUp}
+					disabled={isFirst}
+					aria-label="Move ingredient up"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M18 15l-6-6-6 6"/>
+					</svg>
+				</button>
+				<button
+					type="button"
+					class="move-btn"
+					onclick={handleMoveDown}
+					disabled={isLast}
+					aria-label="Move ingredient down"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M6 9l6 6 6-6"/>
+					</svg>
+				</button>
 			</div>
 			<button
 				type="button"
@@ -259,6 +299,7 @@
 		padding: 0.25rem;
 		margin-left: -0.25rem;
 		flex-shrink: 0;
+		display: none;
 	}
 
 	.drag-handle:active {
@@ -268,6 +309,53 @@
 	.drag-handle-icon {
 		width: 1rem;
 		height: 1rem;
+	}
+
+	.mobile-reorder {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		flex-shrink: 0;
+	}
+
+	.move-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.25rem;
+		height: 1.1rem;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		color: #9ca3af;
+		border-radius: 2px;
+		transition: color 0.15s, background-color 0.15s;
+	}
+
+	.move-btn:hover:not(:disabled) {
+		color: #111827;
+		background-color: #f3f4f6;
+	}
+
+	.move-btn:disabled {
+		color: #d1d5db;
+		cursor: default;
+	}
+
+	.move-btn svg {
+		width: 0.75rem;
+		height: 0.75rem;
+	}
+
+	@media (min-width: 640px) {
+		.drag-handle {
+			display: block;
+		}
+
+		.mobile-reorder {
+			display: none;
+		}
 	}
 
 	.editable-field {
