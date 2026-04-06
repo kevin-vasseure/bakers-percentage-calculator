@@ -1,0 +1,132 @@
+[
+  {
+    "id": "neapolitan-pizza",
+    "title": "Neapolitan Pizza",
+    "description": "",
+    "notes": "450\n320",
+    "ingredients": [
+      { "id": 1, "name": "Type 00", "isFlour": true, "amount": 800, "percentage": 100 },
+      { "id": 2, "name": "Water", "isFlour": false, "amount": 560, "percentage": 70 },
+      { "id": 3, "name": "Salt", "isFlour": false, "amount": 24, "percentage": 3 },
+      { "id": 4, "name": "Yeast", "isFlour": false, "amount": 0.48, "percentage": 0.06 },
+      { "id": 5, "name": "Levain", "isFlour": false, "amount": 48, "percentage": 6 }
+    ]
+  },
+  {
+    "id": "ny-style",
+    "title": "NY Style",
+    "description": "",
+    "notes": "température four \n285\n310",
+    "ingredients": [
+      { "id": 1, "name": "Bread Flour", "isFlour": true, "amount": 500, "percentage": 100 },
+      { "id": 2, "name": "Type 00", "isFlour": true, "amount": 200, "percentage": 0 },
+      { "id": 3, "name": "Farine Complete", "isFlour": true, "amount": 100, "percentage": 0 },
+      { "id": 4, "name": "Water", "isFlour": false, "amount": 544, "percentage": 68 },
+      { "id": 5, "name": "Salt", "isFlour": false, "amount": 24, "percentage": 3 },
+      { "id": 6, "name": "Yeast", "isFlour": false, "amount": 0.48, "percentage": 0.06 },
+      { "id": 7, "name": "Oil", "isFlour": false, "amount": 16, "percentage": 2 },
+      { "id": 8, "name": "Sugar", "isFlour": false, "amount": 16, "percentage": 2 }
+    ]
+  },
+  {
+    "id": "24h-ny-style",
+    "title": "24h NY Style",
+    "description": "",
+    "notes": "350g bread flour\n150g all purpose flour\n12.5g salt (2.5%)\n0.3g instant dry yeast (.06%)\n310g cold water (62%)\n10g olive oil (2%)\n10g sugar (2%) (ommit if using open flame oven outdoor)",
+    "ingredients": [
+      { "id": 1, "name": "Bread Flour", "isFlour": true, "amount": 350, "percentage": 100 },
+      { "id": 2, "name": "Flour", "isFlour": true, "amount": 150, "percentage": 100 },
+      { "id": 3, "name": "Salt", "isFlour": false, "amount": 12, "percentage": 2.4 },
+      { "id": 4, "name": "Yeast", "isFlour": false, "amount": 0.3, "percentage": 0.06 },
+      { "id": 5, "name": "Water", "isFlour": false, "amount": 310, "percentage": 62 },
+      { "id": 6, "name": "Oil", "isFlour": false, "amount": 10, "percentage": 2 },
+      { "id": 7, "name": "Sugar", "isFlour": false, "amount": 10, "percentage": 2 }
+    ]
+  },
+  {
+    "id": "detroit-style",
+    "title": "Detroit Style",
+    "description": "",
+    "notes": "# test",
+    "ingredients": [
+      { "id": 1, "name": "Bread Flour", "isFlour": true, "amount": 370, "percentage": 100 },
+      { "id": 2, "name": "Water", "isFlour": false, "amount": 259, "percentage": 70 },
+      { "id": 3, "name": "Salt", "isFlour": false, "amount": 8, "percentage": 2.16 },
+      { "id": 4, "name": "Yeast", "isFlour": false, "amount": 3, "percentage": 0.81 }
+    ]
+  },
+  {
+    "id": "focaccia",
+    "title": "Focaccia",
+    "description": "",
+    "notes": "",
+    "ingredients": [
+      { "id": 1, "name": "Flour", "isFlour": true, "amount": 500, "percentage": 100 },
+      { "id": 2, "name": "Water", "isFlour": false, "amount": 400, "percentage": 80 },
+      { "id": 3, "name": "Salt", "isFlour": false, "amount": 10, "percentage": 2 },
+      { "id": 4, "name": "Yeast", "isFlour": false, "amount": 6, "percentage": 1.2 },
+      { "id": 5, "name": "Oil", "isFlour": false, "amount": 30, "percentage": 6 },
+      { "id": 6, "name": "Sugar", "isFlour": false, "amount": 5, "percentage": 1 }
+    ]
+  },
+  {
+    "id": "flammekuch",
+    "title": "Flammekuch",
+    "description": "",
+    "notes": "",
+    "ingredients": [
+      { "id": 1, "name": "Flour", "isFlour": true, "amount": 320, "percentage": 100 },
+      { "id": 2, "name": "Water", "isFlour": false, "amount": 180, "percentage": 56.25 },
+      { "id": 3, "name": "Salt", "isFlour": false, "amount": 6, "percentage": 1.88 },
+      { "id": 4, "name": "Oil", "isFlour": false, "amount": 60, "percentage": 18.75 }
+    ]
+  },
+  {
+    "id": "sourdough",
+    "title": "Sourdough Perfect",
+    "description": "",
+    "notes": "",
+    "ingredients": [
+      { "id": 1, "name": "Bread Flour", "isFlour": true, "amount": 330, "percentage": 100 },
+      { "id": 2, "name": "Water", "isFlour": false, "amount": 231, "percentage": 69 },
+      { "id": 3, "name": "Salt", "isFlour": false, "amount": 7.26, "percentage": 2.2 },
+      { "id": 4, "name": "Levain", "isFlour": false, "amount": 99, "percentage": 30 }
+    ]
+  },
+  {
+    "id": "shokupan",
+    "title": "Shokupan",
+    "description": "",
+    "notes": "Yudane 80%",
+    "ingredients": [
+      { "id": 1, "name": "Flour", "isFlour": true, "amount": 300, "percentage": 100 },
+      { "id": 2, "name": "Lait", "isFlour": false, "amount": 162, "percentage": 54 },
+      { "id": 3, "name": "Sucre", "isFlour": false, "amount": 21, "percentage": 7 },
+      { "id": 4, "name": "Yeast", "isFlour": false, "amount": 5.01, "percentage": 1.67 },
+      { "id": 5, "name": "Beurre", "isFlour": false, "amount": 24, "percentage": 8 },
+      { "id": 6, "name": "Yudane", "isFlour": false, "amount": 90, "percentage": 30 },
+      { "id": 7, "name": "Creme", "isFlour": false, "amount": 18, "percentage": 6 }
+    ]
+  },
+  {
+    "id": "flan",
+    "title": "Flan",
+    "description": "Recette flan",
+    "notes": "Ingrédients : \n- 1L de lait entier (pas au rayon frais, je crois que c'est important !)\n- 8 oeufs\n- 120g de sucre blanc \n- du caramel \n- de l'extrait de vanille ou 1 gousse ou de la vanille en poudre \n\nFaire tiédir dans une casserole 1l de lait uht (pas frais) entier avec 120g de sucre. Quand le sucre est dissous, couper le feu.\nDans un saladier battre 8 oeufs. Puis ajouter en continuant de mélanger le lait sucré tiède. \nFiltrer la préparation avec une passoire fine. Ajouter un peu (1cc) d'extrait de vanille ou gratter une gousse de vanille et ajouter au mélange. \nMettre un peu de caramel (j'achète le vahiné qui est très bien mais on peut le faire maison) au fond d'un moule à cake préalablement beurré sur les côtés (je ne sais pas si ça se démoule sans, peut être mais j'avoue que je fais tout le temps comme ça et ça marche !). Je mets une fine couche pour ne plus voir le fond du moule. Verser le mélange. Souvent j'en ai un peu trop alors je fais 2 minis flans a côté dans des ramequins. \nEnsuite je place le moule dans un plan a gratin plus grand et je remplis d'eau bouillante pour le faire cuire au bain marie. Le moule à cake dépasse, il faut que au moins la moitié de la hauteur du moule à cake soit immergée. \nMettre au four 40-45' à 160C, je laisse refroidir et je mets au frigo une nuit.",
+    "ingredients": [
+      { "id": 1, "name": "Oeufs", "isFlour": true, "amount": 360, "percentage": 100 },
+      { "id": 2, "name": "Lait", "isFlour": false, "amount": 750, "percentage": 208.33 },
+      { "id": 3, "name": "Sucre", "isFlour": false, "amount": 90, "percentage": 25 }
+    ]
+  },
+  {
+    "id": "cafe",
+    "title": "Cafe",
+    "description": "",
+    "notes": "",
+    "ingredients": [
+      { "id": 1, "name": "Eau", "isFlour": true, "amount": 450, "percentage": 100 },
+      { "id": 2, "name": "Café", "isFlour": false, "amount": 27, "percentage": 6 }
+    ]
+  }
+]

@@ -19,6 +19,7 @@
 	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
 	import ViewModeToggle from '$lib/components/ViewModeToggle.svelte';
 	import { recipesStore, type RecipeWithIngredients } from '$lib/stores/recipesStore';
+	import defaultRecipes from '$lib/data/defaultRecipes.json';
 
 	let showAuthModal = $state(false);
 	let authMode: 'signin' | 'signup' = $state('signin');
@@ -65,10 +66,28 @@
 		showSaveModal = true;
 	}
 
-	function handleLoadDefault() {
-		if (confirm('Load default recipe? This will replace the current recipe.')) {
-			currentRecipeStore.reset();
+	function handleLoadDefault(event: Event) {
+		const select = event.target as HTMLSelectElement;
+		const recipeId = select.value;
+		if (!recipeId) return;
+
+		const recipe = defaultRecipes.find((r) => r.id === recipeId);
+		if (!recipe) return;
+
+		if (confirm(`Load "${recipe.title}"? This will replace the current recipe.`)) {
+			currentRecipeStore.set({
+				id: '',
+				title: recipe.title,
+				description: recipe.description,
+				notes: recipe.notes,
+				ingredients: recipe.ingredients,
+				isPublic: false,
+				viewMode: false
+			});
+			currentRecipeStore.setNextId(Math.max(...recipe.ingredients.map((ing) => ing.id)) + 1);
 		}
+
+		select.value = '';
 	}
 
 	// Initialize from URL on mount
@@ -149,14 +168,16 @@
 								</svg>
 								Add New Ingredient
 							</button>
-							<button
-								type="button"
-								onclick={handleLoadDefault}
+							<select
+								onchange={handleLoadDefault}
 								class="secondary-button"
 								aria-label="Load default recipe"
 							>
-								Load Default Recipe
-							</button>
+								<option value="">Load Default Recipe...</option>
+								{#each defaultRecipes as recipe}
+									<option value={recipe.id}>{recipe.title}</option>
+								{/each}
+							</select>
 						</div>
 					</div>
 				{/if}
