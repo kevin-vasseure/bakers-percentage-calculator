@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { recipesStore } from '$lib/stores/recipesStore';
-	import { currentNotes } from '$lib/stores/currentRecipeStore';
+	import { currentNotes, portions } from '$lib/stores/currentRecipeStore';
 	import type { Ingredient } from '$lib/stores/ingredientsStore';
 
 	let {
@@ -46,7 +46,8 @@
 				title.trim(),
 				description.trim(),
 				$currentNotes.trim(),
-				ingredients
+				ingredients,
+				$portions
 			);
 
 			if (result.success) {

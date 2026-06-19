@@ -38,6 +38,7 @@
 			description: recipe.description || '',
 			notes: recipe.notes || '',
 			ingredients: convertedIngredients,
+			portions: recipe.portions || 1,
 			isPublic: recipe.is_public || false,
 			viewMode: true
 		});
@@ -72,6 +73,7 @@
 				description: recipe.description,
 				notes: recipe.notes,
 				ingredients: recipe.ingredients,
+				portions: 1,
 				isPublic: false,
 				viewMode: false
 			});

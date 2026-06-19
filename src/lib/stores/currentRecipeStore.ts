@@ -7,6 +7,7 @@ export interface CurrentRecipe {
 	description: string;
 	notes: string;
 	ingredients: Ingredient[];
+	portions: number;
 	isPublic: boolean;
 	viewMode: boolean;
 }
@@ -22,6 +23,7 @@ const initialRecipe: CurrentRecipe = {
 		{ id: 3, name: 'Salt', isFlour: false, amount: 30, percentage: 3 },
 		{ id: 4, name: 'Yeast', isFlour: false, amount: 2, percentage: 0.2 }
 	],
+	portions: 1,
 	isPublic: false,
 	viewMode: false
 };
@@ -225,6 +227,33 @@ function createCurrentRecipeStore() {
 				};
 			}),
 
+		setPortions: (portions: number) =>
+			update((recipe) => ({
+				...recipe,
+				portions: Number.isFinite(portions) && portions >= 1 ? Math.floor(portions) : 1
+			})),
+
+		// Editing the per-portion weight scales the whole recipe (total = perPortion × portions)
+		setWeightPerPortion: (perPortion: number) =>
+			update((recipe) => {
+				const portions = recipe.portions >= 1 ? recipe.portions : 1;
+				const newTotal = perPortion * portions;
+				const currentTotal = recipe.ingredients.reduce((sum, ing) => sum + ing.amount, 0);
+				if (currentTotal === 0 || newTotal < 0) return recipe;
+
+				const ratio = newTotal / currentTotal;
+
+				const scaledIngredients = recipe.ingredients.map((ing) => ({
+					...ing,
+					amount: Math.round(ing.amount * ratio * 10) / 10
+				}));
+
+				return {
+					...recipe,
+					ingredients: scaledIngredients
+				};
+			}),
+
 		// Utility methods
 		setNextId: (id: number) => {
 			nextId = id;
@@ -255,3 +284,13 @@ export const flourCount = derived(
 export const totalWeight = derived(currentRecipeStore, ($recipe) =>
 	$recipe.ingredients.reduce((sum, ing) => sum + ing.amount, 0)
 );
+
+export const portions = derived(currentRecipeStore, ($recipe) =>
+	$recipe.portions >= 1 ? $recipe.portions : 1
+);
+
+export const weightPerPortion = derived(currentRecipeStore, ($recipe) => {
+	const total = $recipe.ingredients.reduce((sum, ing) => sum + ing.amount, 0);
+	const p = $recipe.portions >= 1 ? $recipe.portions : 1;
+	return total / p;
+});

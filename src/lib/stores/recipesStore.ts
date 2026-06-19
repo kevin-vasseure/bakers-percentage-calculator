@@ -12,6 +12,7 @@ export interface RecipeWithIngredients {
 	notes: string | null;
 	is_public: boolean | null;
 	total_weight: number | null;
+	portions: number | null;
 	created_at: string | null;
 	updated_at: string | null;
 	ingredients: Ingredient[];
@@ -93,6 +94,7 @@ function createRecipesStore() {
 		description: string,
 		notes: string,
 		ingredients: Ingredient[],
+		portions: number = 1,
 		isPublic: boolean = false
 	) => {
 		update((state) => ({ ...state, loading: true, error: null }));
@@ -106,6 +108,7 @@ function createRecipesStore() {
 				notes,
 				is_public: isPublic,
 				total_weight: Math.round(calculateTotalWeight(ingredients)),
+				portions: portions >= 1 ? portions : 1,
 				created_at: now,
 				updated_at: now,
 				ingredients: ingredients.map((ing) => ({ ...ing }))
@@ -135,6 +138,7 @@ function createRecipesStore() {
 			description?: string;
 			notes?: string;
 			ingredients?: Ingredient[];
+			portions?: number;
 			isPublic?: boolean;
 		}
 	) => {
@@ -155,6 +159,7 @@ function createRecipesStore() {
 				description: updates.description ?? existing.description,
 				notes: updates.notes ?? existing.notes,
 				is_public: updates.isPublic ?? existing.is_public,
+				portions: updates.portions ?? existing.portions ?? 1,
 				ingredients: updates.ingredients
 					? updates.ingredients.map((ing) => ({ ...ing }))
 					: existing.ingredients,

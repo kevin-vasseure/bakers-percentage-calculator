@@ -17,7 +17,14 @@ export function encodeRecipeToHash(recipe: CurrentRecipe): string {
 	// Escape notes - replace problematic characters
 	const escapedNotes = recipe.notes.replace(/\|\|/g, '%%').replace(/\|/g, '/');
 
-	const compactData = escapedNotes ? `${compactIngredients}||${escapedNotes}` : compactIngredients;
+	// Portions live in a third || segment, only when non-default (keeps old URLs unchanged)
+	const portionsPart = recipe.portions && recipe.portions !== 1 ? String(recipe.portions) : '';
+
+	let compactData = compactIngredients;
+	if (escapedNotes || portionsPart) {
+		compactData += `||${escapedNotes}`;
+		if (portionsPart) compactData += `||${portionsPart}`;
+	}
 
 	try {
 		return btoa(compactData);
@@ -35,6 +42,7 @@ export function decodeHashToRecipe(hash: string): CurrentRecipe | null {
 		const parts = compactData.split('||');
 		const ingredientData = parts[0] || '';
 		const notesData = parts[1] || '';
+		const portionsData = parts[2] || '';
 
 		// Parse ingredients
 		const ingredients = ingredientData
@@ -72,12 +80,17 @@ export function decodeHashToRecipe(hash: string): CurrentRecipe | null {
 		// Unescape notes
 		const notes = notesData.replace(/%%/g, '||').replace(/\//g, '|');
 
+		// Parse portions (default 1 for older URLs)
+		const parsedPortions = parseInt(portionsData, 10);
+		const portions = Number.isFinite(parsedPortions) && parsedPortions >= 1 ? parsedPortions : 1;
+
 		return {
 			id: '',
 			title: '',
 			description: '',
 			notes,
 			ingredients: processedIngredients,
+			portions,
 			isPublic: false,
 			viewMode: true
 		};
