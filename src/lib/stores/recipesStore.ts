@@ -224,6 +224,66 @@ function createRecipesStore() {
 		set(initialState);
 	};
 
+	// Return the saved recipes as a plain array (for JSON export)
+	const exportRecipes = (): RecipeWithIngredients[] => readStorage();
+
+	// Merge recipes from an imported JSON payload into localStorage
+	const importRecipes = (
+		payload: unknown
+	): { success: boolean; imported: number; error?: string } => {
+		try {
+			if (!Array.isArray(payload)) {
+				throw new Error('Invalid file: expected a list of recipes.');
+			}
+
+			const existing = readStorage();
+			const usedIds = new Set(existing.map((r) => r.id));
+			const now = new Date().toISOString();
+			const imported: RecipeWithIngredients[] = [];
+
+			for (const raw of payload) {
+				if (!raw || typeof raw !== 'object') continue;
+				const r = raw as Partial<RecipeWithIngredients>;
+				if (typeof r.title !== 'string' || !Array.isArray(r.ingredients)) continue;
+
+				// Keep the original id when possible, otherwise generate a fresh one
+				let id = typeof r.id === 'string' && r.id ? r.id : generateId();
+				if (usedIds.has(id)) id = generateId();
+				usedIds.add(id);
+
+				const ingredients = (r.ingredients as Ingredient[]).map((ing) => ({ ...ing }));
+
+				imported.push({
+					id,
+					title: r.title,
+					description: r.description ?? '',
+					notes: r.notes ?? '',
+					is_public: r.is_public ?? false,
+					total_weight: r.total_weight ?? Math.round(calculateTotalWeight(ingredients)),
+					portions: r.portions && r.portions >= 1 ? r.portions : 1,
+					created_at: r.created_at ?? now,
+					updated_at: r.updated_at ?? now,
+					ingredients
+				});
+			}
+
+			if (imported.length === 0) {
+				throw new Error('No valid recipes found in the file.');
+			}
+
+			writeStorage([...imported, ...existing]);
+			loadRecipes();
+
+			return { success: true, imported: imported.length };
+		} catch (error) {
+			return {
+				success: false,
+				imported: 0,
+				error: error instanceof Error ? error.message : 'Import failed'
+			};
+		}
+	};
+
 	return {
 		subscribe,
 		loadRecipes,
@@ -232,7 +292,9 @@ function createRecipesStore() {
 		deleteRecipe,
 		selectRecipe,
 		clearError,
-		reset
+		reset,
+		exportRecipes,
+		importRecipes
 	};
 }
 

@@ -56,6 +56,48 @@
 			onUpdateRecipe(currentRecipe);
 		}
 	}
+
+	// --- JSON import / export ---
+	let importInput = $state<HTMLInputElement>();
+	let ioMessage = $state('');
+	let ioError = $state(false);
+
+	function flashMessage(message: string, isError: boolean) {
+		ioMessage = message;
+		ioError = isError;
+		setTimeout(() => (ioMessage = ''), 3500);
+	}
+
+	function exportRecipes() {
+		const data = recipesStore.exportRecipes();
+		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `bakers-recipes-${new Date().toISOString().slice(0, 10)}.json`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	async function handleImportFile(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const file = input.files?.[0];
+		if (!file) return;
+
+		try {
+			const json = JSON.parse(await file.text());
+			const result = recipesStore.importRecipes(json);
+			if (result.success) {
+				flashMessage(`Imported ${result.imported} recipe(s).`, false);
+			} else {
+				flashMessage(result.error ?? 'Import failed.', true);
+			}
+		} catch {
+			flashMessage('Invalid JSON file.', true);
+		} finally {
+			input.value = ''; // allow re-importing the same file
+		}
+	}
 </script>
 
 <div class="flex h-full flex-col border-r-2 border-black bg-white">
@@ -111,6 +153,42 @@
 					</button>
 				{/if}
 			</div>
+		</div>
+	{/if}
+
+	<!-- Import / Export -->
+	<div class="flex items-center gap-2 border-b-2 border-black bg-white p-3">
+		<button
+			type="button"
+			onclick={exportRecipes}
+			disabled={recipes.length === 0}
+			class="btn-light flex-1 !px-3 !py-2 !text-xs"
+		>
+			Export JSON
+		</button>
+		<button
+			type="button"
+			onclick={() => importInput?.click()}
+			class="btn-light flex-1 !px-3 !py-2 !text-xs"
+		>
+			Import JSON
+		</button>
+		<input
+			bind:this={importInput}
+			type="file"
+			accept="application/json,.json"
+			class="hidden"
+			onchange={handleImportFile}
+		/>
+	</div>
+
+	{#if ioMessage}
+		<div
+			class="border-b-2 border-black px-4 py-2 text-xs font-medium {ioError
+				? 'bg-black text-white'
+				: 'bg-gray-100 text-black'}"
+		>
+			{ioMessage}
 		</div>
 	{/if}
 
