@@ -1,4 +1,23 @@
 import { browser } from '$app/environment';
+import { writable } from 'svelte/store';
+
+const PREF_KEY = 'bakers-keep-awake';
+
+// User preference: should the screen be kept awake? Persisted across sessions.
+function createKeepAwakeStore() {
+	const initial = browser && localStorage.getItem(PREF_KEY) === '1';
+	const { subscribe, set } = writable<boolean>(initial);
+
+	return {
+		subscribe,
+		set: (value: boolean) => {
+			if (browser) localStorage.setItem(PREF_KEY, value ? '1' : '0');
+			set(value);
+		}
+	};
+}
+
+export const keepAwake = createKeepAwakeStore();
 
 // Minimal structural typing so we don't depend on lib.dom's WakeLock types
 type WakeLockSentinelLike = {

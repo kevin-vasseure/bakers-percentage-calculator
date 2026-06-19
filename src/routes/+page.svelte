@@ -8,9 +8,7 @@
 		type CurrentRecipe
 	} from '$lib/stores/currentRecipeStore';
 	import { decodeHashToRecipe, updateUrlHash } from '$lib/utils/urlEncoding';
-	import { requestWakeLock, releaseWakeLock } from '$lib/utils/wakeLock';
 	import IngredientTable from '$lib/components/IngredientTable.svelte';
-	import ShareButton from '$lib/components/ShareButton.svelte';
 	import TotalWeight from '$lib/components/TotalWeight.svelte';
 	import HelpModal from '$lib/components/HelpModal.svelte';
 	import BottomBar from '$lib/components/BottomBar.svelte';
@@ -100,36 +98,12 @@
 				);
 			}
 		}
-
-		// The OS drops the screen wake lock whenever the page is backgrounded;
-		// re-acquire it when we come back if we're still reading the recipe.
-		const onVisibilityChange = () => {
-			if (document.visibilityState === 'visible' && $currentRecipeStore.viewMode) {
-				requestWakeLock();
-			}
-		};
-		document.addEventListener('visibilitychange', onVisibilityChange);
-
-		return () => {
-			document.removeEventListener('visibilitychange', onVisibilityChange);
-			releaseWakeLock();
-		};
 	});
 
 	// Update URL hash when recipe changes
 	$effect(() => {
 		if (browser && $currentIngredients.length > 0) {
 			setTimeout(() => updateUrlHash($currentRecipeStore), 100);
-		}
-	});
-
-	// Keep the screen awake while reading a recipe (view mode); release in edit mode
-	$effect(() => {
-		if (!browser) return;
-		if ($currentRecipeStore.viewMode) {
-			requestWakeLock();
-		} else {
-			releaseWakeLock();
 		}
 	});
 </script>
@@ -147,18 +121,12 @@
 		<div class="mx-auto max-w-4xl">
 			<div class="main-card">
 				<header class="header-section">
-					<div class="flex items-start justify-between gap-3">
-						<div class="w-10 shrink-0" aria-hidden="true"></div>
-						<div class="min-w-0 flex-1 text-center">
-							<h1 class="app-title">Baker's Percentage Calculator: {$currentRecipeStore.title}</h1>
-							<p class="app-subtitle">
-								{$currentRecipeStore.description === ''
-									? 'Calculate perfect dough percentages'
-									: $currentRecipeStore.description}
-							</p>
-						</div>
-						<ShareButton />
-					</div>
+					<h1 class="app-title">Baker's Percentage Calculator: {$currentRecipeStore.title}</h1>
+					<p class="app-subtitle">
+						{$currentRecipeStore.description === ''
+							? 'Calculate perfect dough percentages'
+							: $currentRecipeStore.description}
+					</p>
 				</header>
 
 				<IngredientTable />
