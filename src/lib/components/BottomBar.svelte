@@ -3,7 +3,8 @@
 	import { currentRecipeStore } from '$lib/stores/currentRecipeStore';
 
 	let {
-		onOpenRecipes = undefined as (() => void) | undefined
+		onOpenRecipes = undefined as (() => void) | undefined,
+		onOpenHelp = undefined as (() => void) | undefined
 	} = $props();
 
 	let count = $derived($recipesStore.recipes.length);
@@ -65,6 +66,26 @@
 			<span class="dock-label">Recipes</span>
 			<span class="dock-count" class:dock-count--empty={count === 0}>{count}</span>
 		</button>
+
+		<button
+			type="button"
+			class="dock-btn dock-btn--help"
+			onclick={() => onOpenHelp?.()}
+			aria-label="How to use this calculator"
+			title="Help"
+		>
+			<span class="dock-icon" aria-hidden="true">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<circle cx="12" cy="12" r="9" />
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M9.5 9a2.5 2.5 0 014.5 1.5c0 1.5-2 2-2 3"
+					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01" />
+				</svg>
+			</span>
+		</button>
 	</div>
 </div>
 
@@ -124,9 +145,17 @@
 		outline-offset: -3px;
 	}
 
-	/* Divider between the two segments */
-	.dock-btn--toggle {
+	/* Dividers between segments */
+	.dock-btn:not(:last-child) {
 		border-right: 2px solid #000;
+	}
+
+	/* Compact icon-only help segment */
+	.dock-btn--help {
+		flex: 0 0 auto;
+		padding-left: 1rem;
+		padding-right: 1rem;
+		gap: 0;
 	}
 
 	.dock-icon {

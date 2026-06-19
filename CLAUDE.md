@@ -38,15 +38,14 @@ src/
 │   │   ├── IngredientTable.svelte      # Table conteneur (switch view/edit)
 │   │   ├── IngredientRowView.svelte    # Ligne lecture seule
 │   │   ├── IngredientRowEdit.svelte    # Ligne éditable (modal, drag, toggle flour)
-│   │   ├── EditModal.svelte            # Modal générique d'édition
-│   │   ├── TotalWeight.svelte          # Poids total (éditable en mode edit)
-│   │   ├── ViewModeToggle.svelte       # FAB toggle view/edit
-│   │   ├── ShareButton.svelte          # Partage via URL
+│   │   ├── EditModal.svelte            # Modal générique d'édition (poids, portions, valeurs)
+│   │   ├── TotalWeight.svelte          # Poids total + portions + poids/portion (éditables en mode edit)
+│   │   ├── ShareButton.svelte          # Bouton-icône de partage via URL (coin du header)
 │   │   ├── MarkdownEditor.svelte       # Wrapper ByteMD
 │   │   ├── RecipeList.svelte           # Panel recettes sauvegardées
 │   │   ├── SaveRecipeModal.svelte      # Modal sauvegarde recette
-│   │   ├── BottomBar.svelte            # Barre navigation fixe
-│   │   └── HelpSection.svelte          # Guide utilisateur
+│   │   ├── BottomBar.svelte            # Dock flottant : toggle view/edit + recettes + aide
+│   │   └── HelpModal.svelte            # Guide utilisateur (modale, ouverte depuis le dock)
 │   ├── stores/
 │   │   ├── currentRecipeStore.ts       # Store principal unifié (source de vérité)
 │   │   ├── ingredientsStore.ts         # Store legacy (encore importé dans certains composants)

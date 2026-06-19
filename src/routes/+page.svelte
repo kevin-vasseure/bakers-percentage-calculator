@@ -11,7 +11,7 @@
 	import IngredientTable from '$lib/components/IngredientTable.svelte';
 	import ShareButton from '$lib/components/ShareButton.svelte';
 	import TotalWeight from '$lib/components/TotalWeight.svelte';
-	import HelpSection from '$lib/components/HelpSection.svelte';
+	import HelpModal from '$lib/components/HelpModal.svelte';
 	import BottomBar from '$lib/components/BottomBar.svelte';
 	import RecipeList from '$lib/components/RecipeList.svelte';
 	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
@@ -21,6 +21,7 @@
 
 	let showSaveModal = $state(false);
 	let showRecipeList = $state(false);
+	let showHelp = $state(false);
 
 	function handleLoadRecipe(recipe: RecipeWithIngredients) {
 		// Convert from database format to our ingredient format
@@ -195,13 +196,12 @@
 				</div>
 			</div>
 
-			<HelpSection />
 		</div>
 	</div>
 </div>
 
 <!-- Bottom Bar -->
-<BottomBar onOpenRecipes={toggleRecipeList} />
+<BottomBar onOpenRecipes={toggleRecipeList} onOpenHelp={() => (showHelp = true)} />
 
 <!-- Recipe List Slide-up Overlay -->
 {#if showRecipeList}
@@ -233,3 +233,4 @@
 
 <!-- Modals -->
 <SaveRecipeModal bind:isOpen={showSaveModal} ingredients={$currentIngredients} />
+<HelpModal bind:isOpen={showHelp} />
