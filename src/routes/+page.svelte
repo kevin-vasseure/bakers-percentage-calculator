@@ -8,6 +8,7 @@
 		type CurrentRecipe
 	} from '$lib/stores/currentRecipeStore';
 	import { decodeHashToRecipe, updateUrlHash } from '$lib/utils/urlEncoding';
+	import { requestWakeLock, releaseWakeLock } from '$lib/utils/wakeLock';
 	import IngredientTable from '$lib/components/IngredientTable.svelte';
 	import ShareButton from '$lib/components/ShareButton.svelte';
 	import TotalWeight from '$lib/components/TotalWeight.svelte';
@@ -99,12 +100,36 @@
 				);
 			}
 		}
+
+		// The OS drops the screen wake lock whenever the page is backgrounded;
+		// re-acquire it when we come back if we're still reading the recipe.
+		const onVisibilityChange = () => {
+			if (document.visibilityState === 'visible' && $currentRecipeStore.viewMode) {
+				requestWakeLock();
+			}
+		};
+		document.addEventListener('visibilitychange', onVisibilityChange);
+
+		return () => {
+			document.removeEventListener('visibilitychange', onVisibilityChange);
+			releaseWakeLock();
+		};
 	});
 
 	// Update URL hash when recipe changes
 	$effect(() => {
 		if (browser && $currentIngredients.length > 0) {
 			setTimeout(() => updateUrlHash($currentRecipeStore), 100);
+		}
+	});
+
+	// Keep the screen awake while reading a recipe (view mode); release in edit mode
+	$effect(() => {
+		if (!browser) return;
+		if ($currentRecipeStore.viewMode) {
+			requestWakeLock();
+		} else {
+			releaseWakeLock();
 		}
 	});
 </script>
