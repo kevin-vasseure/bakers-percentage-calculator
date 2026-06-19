@@ -7,10 +7,9 @@ Application web permettant aux boulangers de calculer et gérer les pourcentages
 - **Framework** : SvelteKit 2 + Svelte 5 (transition en cours depuis Svelte 4)
 - **Langage** : TypeScript 5 (avec `allowJs`, config via `jsconfig.json`)
 - **Styling** : Tailwind CSS v4 (plugin Vite natif, pas de `tailwind.config.js`) + classes sémantiques dans `app.css`
-- **Backend/Auth/DB** : Supabase (PostgreSQL + Auth)
+- **Persistance** : `localStorage` (recettes sauvegardées côté navigateur, sans backend ni compte)
 - **Éditeur Markdown** : ByteMD avec GFM
 - **Déploiement** : Vercel (`@sveltejs/adapter-vercel`)
-- **CAPTCHA** : Cloudflare Turnstile
 - **Tests** : Vitest + Testing Library (setup minimal)
 - **Package manager** : npm
 
@@ -46,15 +45,12 @@ src/
 │   │   ├── MarkdownEditor.svelte       # Wrapper ByteMD
 │   │   ├── RecipeList.svelte           # Panel recettes sauvegardées
 │   │   ├── SaveRecipeModal.svelte      # Modal sauvegarde recette
-│   │   ├── AuthModal.svelte            # Modal connexion/inscription
-│   │   ├── Turnstile.svelte            # Widget CAPTCHA
 │   │   ├── BottomBar.svelte            # Barre navigation fixe
 │   │   └── HelpSection.svelte          # Guide utilisateur
 │   ├── stores/
 │   │   ├── currentRecipeStore.ts       # Store principal unifié (source de vérité)
 │   │   ├── ingredientsStore.ts         # Store legacy (encore importé dans certains composants)
-│   │   ├── recipesStore.ts             # CRUD Supabase pour les recettes
-│   │   ├── authStore.ts                # État auth + méthodes sign in/up/out
+│   │   ├── recipesStore.ts             # CRUD des recettes via localStorage
 │   │   └── dragDropStore.ts            # État drag-and-drop
 │   └── utils/
 │       ├── calculations.ts             # Helpers purs : totalWeight, flourCount, flourWeight
@@ -80,22 +76,17 @@ src/
 ### Syntaxe Svelte mixte
 Le projet est en **transition Svelte 4 → Svelte 5**. On trouve :
 - Svelte 5 : `$props()`, `$derived()`, `$state()` (ex: `+layout.svelte`, `RecipeList.svelte`)
-- Svelte 4 : `export let`, `$:`, `on:event` (ex: `IngredientRowEdit.svelte`, `AuthModal.svelte`)
+- Svelte 4 : `export let`, `$:`, `on:event` (ex: `IngredientRowEdit.svelte`)
 
 ### Partage de recettes
 Encodage URL sans serveur : la recette complète est sérialisée en Base64 dans le hash de l'URL, permettant un partage stateless.
+
+### Persistance des recettes
+`recipesStore.ts` gère les recettes sauvegardées dans `localStorage` (clé `bakers-recipes`), sans backend ni authentification. Chaque recette a un `id` généré (`crypto.randomUUID()`) et des timestamps ISO.
 
 ### CSS
 Approche hybride : utilitaires Tailwind inline + classes sémantiques définies avec `@apply` dans `app.css` + blocs `<style>` scopés dans les composants.
 
 ## Variables d'environnement
 
-Le projet utilise des variables Supabase et Turnstile (préfixées `PUBLIC_` pour SvelteKit) :
-- `PUBLIC_SUPABASE_URL`
-- `PUBLIC_SUPABASE_ANON_KEY`
-- `PUBLIC_TURNSTILE_SITE_KEY`
-
-## Fichiers notables
-
-- `supabase-schema.sql` — Schéma SQL de référence pour la base Supabase
-- `src/lib/database.types.ts` — Types générés depuis le schéma Supabase
+Aucune variable d'environnement requise — l'application est entièrement côté client.

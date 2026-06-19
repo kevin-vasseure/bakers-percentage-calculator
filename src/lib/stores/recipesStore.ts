@@ -1,16 +1,19 @@
 import { writable } from 'svelte/store';
-import { supabase } from '$lib/supabase';
-import { authStore } from './authStore';
+import { browser } from '$app/environment';
 import type { Ingredient } from './ingredientsStore';
 import { calculateTotalWeight } from '$lib/utils/calculations';
-import type { Database } from '$lib/database.types';
-import type { SupabaseClient } from '@supabase/supabase-js';
 
-type Recipe = Database['public']['Tables']['recipes']['Row'];
-type RecipeInsert = Database['public']['Tables']['recipes']['Insert'];
-type RecipeUpdate = Database['public']['Tables']['recipes']['Update'];
+const STORAGE_KEY = 'bakers-recipes';
 
-export interface RecipeWithIngredients extends Recipe {
+export interface RecipeWithIngredients {
+	id: string;
+	title: string;
+	description: string | null;
+	notes: string | null;
+	is_public: boolean | null;
+	total_weight: number | null;
+	created_at: string | null;
+	updated_at: string | null;
 	ingredients: Ingredient[];
 }
 
@@ -28,6 +31,37 @@ const initialState: RecipesState = {
 	selectedRecipeId: null
 };
 
+function generateId(): string {
+	if (browser && typeof crypto !== 'undefined' && crypto.randomUUID) {
+		return crypto.randomUUID();
+	}
+	return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function readStorage(): RecipeWithIngredients[] {
+	if (!browser) return [];
+
+	try {
+		const raw = localStorage.getItem(STORAGE_KEY);
+		if (!raw) return [];
+		const parsed = JSON.parse(raw);
+		return Array.isArray(parsed) ? (parsed as RecipeWithIngredients[]) : [];
+	} catch (error) {
+		console.error('Error reading recipes from localStorage:', error);
+		return [];
+	}
+}
+
+function writeStorage(recipes: RecipeWithIngredients[]): void {
+	if (!browser) return;
+
+	try {
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
+	} catch (error) {
+		console.error('Error writing recipes to localStorage:', error);
+	}
+}
+
 function createRecipesStore() {
 	const { subscribe, set, update } = writable<RecipesState>(initialState);
 
@@ -35,65 +69,13 @@ function createRecipesStore() {
 		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
-			// Get current user
-			const {
-				data: { user },
-				error: userError
-			} = await supabase.auth.getUser();
-			if (userError || !user) {
-				throw new Error('User not authenticated');
-			}
-
-			const { data: recipes, error: recipesError } = await supabase
-				.from('recipes')
-				.select(
-					`
-					*,
-					ingredients (
-						id,
-						name,
-						is_flour,
-						amount,
-						percentage,
-						sort_order
-					)
-				`
-				)
-				.eq('user_id', user.id)
-				.order('updated_at', { ascending: false });
-
-			if (recipesError) throw recipesError;
-
-			type RecipeWithIngredientsQuery = Recipe & {
-				ingredients: Array<{
-					id: string;
-					name: string;
-					is_flour: boolean | null;
-					amount: number | null;
-					percentage: number | null;
-					sort_order: number | null;
-				}>;
-			};
-
-			const recipesWithIngredients: RecipeWithIngredients[] = (
-				(recipes as RecipeWithIngredientsQuery[]) || []
-			).map((recipe) => ({
-				...recipe,
-				ingredients: (recipe.ingredients || [])
-					.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
-					.map((ing, index) => ({
-						id: index + 1, // Convert to our local ID system
-						recipe_id: ing.id,
-						name: ing.name,
-						isFlour: ing.is_flour || false,
-						amount: Number(ing.amount) || 0,
-						percentage: Number(ing.percentage) || 0
-					}))
-			}));
+			const recipes = readStorage().sort((a, b) =>
+				(b.updated_at || '').localeCompare(a.updated_at || '')
+			);
 
 			update((state) => ({
 				...state,
-				recipes: recipesWithIngredients,
+				recipes,
 				loading: false
 			}));
 		} catch (error) {
@@ -116,58 +98,23 @@ function createRecipesStore() {
 		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
-			const totalWeight = calculateTotalWeight(ingredients);
-
-			// Get current user
-			const {
-				data: { user },
-				error: userError
-			} = await supabase.auth.getUser();
-			if (userError || !user) {
-				throw new Error('User not authenticated');
-			}
-
-			// Insert recipe
-			const recipeData: RecipeInsert = {
-				user_id: user.id,
+			const now = new Date().toISOString();
+			const recipe: RecipeWithIngredients = {
+				id: generateId(),
 				title,
 				description,
 				notes,
 				is_public: isPublic,
-				total_weight: Math.round(totalWeight)
+				total_weight: Math.round(calculateTotalWeight(ingredients)),
+				created_at: now,
+				updated_at: now,
+				ingredients: ingredients.map((ing) => ({ ...ing }))
 			};
 
-			const { data: recipe, error: recipeError } = await (supabase as SupabaseClient)
-				.from('recipes')
-				.insert(recipeData)
-				.select()
-				.single();
+			const recipes = [recipe, ...readStorage()];
+			writeStorage(recipes);
 
-			if (recipeError) throw recipeError;
-
-			// Insert ingredients
-			const ingredientsToInsert = ingredients.map((ing, index) => ({
-				recipe_id: recipe!.id,
-				name: ing.name,
-				is_flour: ing.isFlour,
-				amount: ing.amount,
-				percentage: ing.percentage,
-				sort_order: index
-			}));
-
-			const { error: ingredientsError } = await (supabase as SupabaseClient)
-				.from('ingredients')
-				.insert(ingredientsToInsert);
-
-			if (ingredientsError) throw ingredientsError;
-
-			// Try to reload recipes, but don't fail if it doesn't work
-			try {
-				await loadRecipes();
-			} catch (loadError) {
-				console.warn('Recipe saved successfully, but failed to reload recipe list:', loadError);
-				// Continue - don't fail the save operation
-			}
+			await loadRecipes();
 
 			return { success: true, recipe };
 		} catch (error) {
@@ -194,53 +141,32 @@ function createRecipesStore() {
 		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
-			const recipeUpdates: RecipeUpdate = {};
+			const recipes = readStorage();
+			const index = recipes.findIndex((r) => r.id === recipeId);
 
-			if (updates.title !== undefined) recipeUpdates.title = updates.title;
-			if (updates.description !== undefined) recipeUpdates.description = updates.description;
-			if (updates.notes !== undefined) recipeUpdates.notes = updates.notes;
-			if (updates.isPublic !== undefined) recipeUpdates.is_public = updates.isPublic;
-
-			if (updates.ingredients) {
-				recipeUpdates.total_weight = Math.round(calculateTotalWeight(updates.ingredients));
+			if (index === -1) {
+				throw new Error('Recipe not found');
 			}
 
-			// Update recipe
-			const { error: recipeError } = await (supabase as SupabaseClient)
-				.from('recipes')
-				.update(recipeUpdates)
-				.eq('id', recipeId);
+			const existing = recipes[index];
+			const updated: RecipeWithIngredients = {
+				...existing,
+				title: updates.title ?? existing.title,
+				description: updates.description ?? existing.description,
+				notes: updates.notes ?? existing.notes,
+				is_public: updates.isPublic ?? existing.is_public,
+				ingredients: updates.ingredients
+					? updates.ingredients.map((ing) => ({ ...ing }))
+					: existing.ingredients,
+				total_weight: updates.ingredients
+					? Math.round(calculateTotalWeight(updates.ingredients))
+					: existing.total_weight,
+				updated_at: new Date().toISOString()
+			};
 
-			if (recipeError) throw recipeError;
+			recipes[index] = updated;
+			writeStorage(recipes);
 
-			// Update ingredients if provided
-			if (updates.ingredients) {
-				// Delete existing ingredients
-				const { error: deleteError } = await supabase
-					.from('ingredients')
-					.delete()
-					.eq('recipe_id', recipeId);
-
-				if (deleteError) throw deleteError;
-
-				// Insert new ingredients
-				const ingredientsToInsert = updates.ingredients.map((ing, index) => ({
-					recipe_id: recipeId,
-					name: ing.name,
-					is_flour: ing.isFlour,
-					amount: ing.amount,
-					percentage: ing.percentage,
-					sort_order: index
-				}));
-
-				const { error: ingredientsError } = await (supabase as SupabaseClient)
-					.from('ingredients')
-					.insert(ingredientsToInsert);
-
-				if (ingredientsError) throw ingredientsError;
-			}
-
-			// Reload recipes
 			await loadRecipes();
 
 			return { success: true };
@@ -259,11 +185,9 @@ function createRecipesStore() {
 		update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
-			const { error } = await supabase.from('recipes').delete().eq('id', recipeId);
+			const recipes = readStorage().filter((r) => r.id !== recipeId);
+			writeStorage(recipes);
 
-			if (error) throw error;
-
-			// Remove from local state
 			update((state) => ({
 				...state,
 				recipes: state.recipes.filter((r) => r.id !== recipeId),
@@ -309,11 +233,7 @@ function createRecipesStore() {
 
 export const recipesStore = createRecipesStore();
 
-// Auto-load recipes when user authenticates
-authStore.subscribe((auth) => {
-	if (auth.user && !auth.loading) {
-		recipesStore.loadRecipes();
-	} else if (!auth.user) {
-		recipesStore.reset();
-	}
-});
+// Load saved recipes from localStorage on startup (client only)
+if (browser) {
+	recipesStore.loadRecipes();
+}

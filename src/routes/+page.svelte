@@ -13,23 +13,14 @@
 	import TotalWeight from '$lib/components/TotalWeight.svelte';
 	import HelpSection from '$lib/components/HelpSection.svelte';
 	import BottomBar from '$lib/components/BottomBar.svelte';
-	import AuthModal from '$lib/components/AuthModal.svelte';
 	import RecipeList from '$lib/components/RecipeList.svelte';
 	import SaveRecipeModal from '$lib/components/SaveRecipeModal.svelte';
 	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
-	import ViewModeToggle from '$lib/components/ViewModeToggle.svelte';
 	import { recipesStore, type RecipeWithIngredients } from '$lib/stores/recipesStore';
 	import defaultRecipes from '$lib/data/defaultRecipes.json';
 
-	let showAuthModal = $state(false);
-	let authMode: 'signin' | 'signup' = $state('signin');
 	let showSaveModal = $state(false);
 	let showRecipeList = $state(false);
-
-	function handleOpenAuth(event: { mode: 'signin' | 'signup' }) {
-		authMode = event.mode;
-		showAuthModal = true;
-	}
 
 	function handleLoadRecipe(recipe: RecipeWithIngredients) {
 		// Convert from database format to our ingredient format
@@ -128,8 +119,9 @@
 		<div class="mx-auto max-w-4xl">
 			<div class="main-card">
 				<header class="header-section">
-					<div class="flex items-center justify-center">
-						<div>
+					<div class="flex items-start justify-between gap-3">
+						<div class="w-10 shrink-0" aria-hidden="true"></div>
+						<div class="min-w-0 flex-1 text-center">
 							<h1 class="app-title">Baker's Percentage Calculator: {$currentRecipeStore.title}</h1>
 							<p class="app-subtitle">
 								{$currentRecipeStore.description === ''
@@ -137,6 +129,7 @@
 									: $currentRecipeStore.description}
 							</p>
 						</div>
+						<ShareButton />
 					</div>
 				</header>
 
@@ -184,8 +177,6 @@
 
 				<TotalWeight />
 
-				<ShareButton />
-
 				<!-- Recipe Notes Section -->
 				<div class="border-t-2 border-black bg-white px-8 py-6">
 					<div class="mb-4">
@@ -208,7 +199,7 @@
 </div>
 
 <!-- Bottom Bar -->
-<BottomBar onOpenAuth={handleOpenAuth} onOpenRecipes={toggleRecipeList} />
+<BottomBar onOpenRecipes={toggleRecipeList} />
 
 <!-- Recipe List Slide-up Overlay -->
 {#if showRecipeList}
@@ -239,8 +230,4 @@
 {/if}
 
 <!-- Modals -->
-<AuthModal bind:isOpen={showAuthModal} mode={authMode} />
 <SaveRecipeModal bind:isOpen={showSaveModal} ingredients={$currentIngredients} />
-
-<!-- Floating View/Edit Toggle Button -->
-<ViewModeToggle />

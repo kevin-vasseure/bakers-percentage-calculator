@@ -11,7 +11,6 @@
 
 	let title = $state('');
 	let description = $state('');
-	let isPublic = $state(false);
 	let loading = $state(false);
 	let error = $state('');
 
@@ -24,7 +23,6 @@
 	function resetForm() {
 		title = '';
 		description = '';
-		isPublic = false;
 		loading = false;
 		error = '';
 	}
@@ -48,11 +46,8 @@
 				title.trim(),
 				description.trim(),
 				$currentNotes.trim(),
-				ingredients,
-				isPublic
+				ingredients
 			);
-
-			console.log('Save result:', result);
 
 			if (result.success) {
 				closeModal();
@@ -99,10 +94,19 @@
 			aria-modal="true"
 			aria-labelledby="save-modal-title"
 		>
-			<div class="pointer-events-auto relative w-full max-w-md border-2 border-black bg-white p-6">
+			<div
+				class="pointer-events-auto relative w-full max-w-md border-2 border-black bg-white p-6"
+				style="box-shadow: var(--shadow-hard-lg);"
+			>
 				<div class="mb-6">
-					<h2 id="save-modal-title" class="text-2xl font-bold text-gray-900">Save Recipe</h2>
-					<p class="mt-2 text-sm text-gray-600">Save your current recipe to access it later</p>
+					<h2
+						id="save-modal-title"
+						class="text-2xl font-extrabold tracking-tight text-black"
+						style="letter-spacing: -0.02em;"
+					>
+						Save Recipe
+					</h2>
+					<p class="mt-1 text-sm text-gray-600">Save your current recipe to access it later</p>
 				</div>
 
 				<form
@@ -139,19 +143,6 @@
 						></textarea>
 					</div>
 
-					<div>
-						<label class="flex items-center">
-							<input
-								type="checkbox"
-								bind:checked={isPublic}
-								class="h-4 w-4 border-2 border-black text-black focus:ring-2 focus:ring-gray-500"
-							/>
-							<span class="ml-2 text-sm text-gray-700">
-								Make recipe public (others can view it)
-							</span>
-						</label>
-					</div>
-
 					<!-- Recipe Preview -->
 					<div class="border-2 border-gray-300 bg-gray-100 p-3">
 						<h4 class="mb-2 text-sm font-medium text-black">Recipe Preview:</h4>
@@ -176,19 +167,11 @@
 						</div>
 					{/if}
 
-					<div class="flex space-x-3">
-						<button
-							type="button"
-							onclick={closeModal}
-							class="flex-1 border-2 border-black px-4 py-2 text-sm font-medium text-black hover:bg-black hover:text-white focus:ring-2 focus:ring-black focus:outline-none"
-						>
+					<div class="flex space-x-3 pt-2">
+						<button type="button" onclick={closeModal} class="btn-light flex-1">
 							Cancel
 						</button>
-						<button
-							type="submit"
-							disabled={loading}
-							class="flex-1 border-2 border-black bg-black px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-						>
+						<button type="submit" disabled={loading} class="btn-dark flex-1">
 							{loading ? 'Saving...' : 'Save Recipe'}
 						</button>
 					</div>

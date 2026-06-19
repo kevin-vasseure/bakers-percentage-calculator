@@ -28,7 +28,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests, skip cross-origin and Supabase API calls
+  // Only handle GET requests, skip cross-origin requests
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET') return;
   if (url.origin !== self.location.origin) return;

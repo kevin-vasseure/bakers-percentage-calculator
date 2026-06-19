@@ -10,7 +10,7 @@
 	} = $props();
 
 	let inputValue = $state(value);
-	let inputElement: HTMLInputElement;
+	let inputElement = $state<HTMLInputElement>();
 
 	$effect(() => {
 		if (isOpen) {
@@ -99,10 +99,8 @@
 
 	.edit-modal-container {
 		background-color: #ffffff;
-		border-radius: 0.5rem;
-		box-shadow:
-			0 20px 25px -5px rgba(0, 0, 0, 0.1),
-			0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		border: 2px solid #000;
+		box-shadow: var(--shadow-hard-lg);
 		max-width: 400px;
 		width: 100%;
 		animation: modalSlideIn 0.2s ease-out;
@@ -110,22 +108,27 @@
 
 	@keyframes modalSlideIn {
 		from {
-			transform: translateY(-20px) scale(0.95);
+			opacity: 0;
+			transform: translateY(-12px);
 		}
 		to {
-			transform: translateY(0) scale(1);
+			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 
 	.modal-header {
 		padding: 1rem 1.5rem;
-		border-bottom: 1px solid #e5e7eb;
+		background-color: #000;
 	}
 
 	.modal-title {
-		font-size: 1.125rem;
-		font-weight: 600;
-		color: #111827;
+		font-family: var(--font-display);
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: #fff;
 		margin: 0;
 	}
 
@@ -141,16 +144,18 @@
 		width: 100%;
 		padding: 0.75rem;
 		padding-right: 3rem;
+		font-family: var(--font-mono);
 		font-size: 1.125rem;
-		border: 2px solid #d1d5db;
-		border-radius: 0.375rem;
+		border: 2px solid #000;
 		outline: none;
-		transition: border-color 0.2s;
+		transition:
+			box-shadow 0.15s ease,
+			border-color 0.15s ease;
 	}
 
 	.modal-input:focus {
-		border-color: #3b82f6;
-		box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+		border-color: #000;
+		box-shadow: var(--shadow-hard);
 	}
 
 	.input-unit {
@@ -158,6 +163,7 @@
 		right: 0.75rem;
 		top: 50%;
 		transform: translateY(-50%);
+		font-family: var(--font-mono);
 		font-size: 1rem;
 		color: #6b7280;
 		pointer-events: none;
@@ -165,48 +171,57 @@
 
 	.modal-footer {
 		padding: 1rem 1.5rem;
-		border-top: 1px solid #e5e7eb;
+		border-top: 2px solid #000;
 		display: flex;
 		gap: 0.75rem;
 		justify-content: flex-end;
 	}
 
 	.modal-button {
-		padding: 0.5rem 1rem;
-		border-radius: 0.375rem;
-		font-size: 0.875rem;
-		font-weight: 500;
+		padding: 0.625rem 1.25rem;
+		font-family: var(--font-display);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 		cursor: pointer;
-		transition: all 0.2s;
-		border: none;
+		border: 2px solid #000;
+		transition:
+			background-color 0.15s ease,
+			transform 0.15s ease,
+			box-shadow 0.15s ease;
+	}
+
+	.modal-button:active {
+		transform: translate(2px, 2px);
+		box-shadow: none !important;
 	}
 
 	.modal-button--cancel {
-		background-color: #f3f4f6;
-		color: #374151;
+		background-color: #fff;
+		color: #000;
 	}
 
 	.modal-button--cancel:hover {
-		background-color: #e5e7eb;
+		background-color: var(--hover-light);
 	}
 
 	.modal-button--save {
-		background-color: #3b82f6;
-		color: white;
+		background-color: #000;
+		color: #fff;
+		box-shadow: var(--shadow-hard);
 	}
 
 	.modal-button--save:hover {
-		background-color: #2563eb;
+		background-color: var(--hover-dark);
+		transform: translate(-2px, -2px);
+		box-shadow: var(--shadow-hard-lg);
 	}
 
 	@media (max-width: 640px) {
 		.edit-modal-container {
 			max-width: 100%;
 			margin: 0 1rem;
-		}
-
-		.modal-title {
-			font-size: 1rem;
 		}
 
 		.modal-input {

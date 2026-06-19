@@ -5,37 +5,142 @@
 /* Bytemd Editor Styles */
 @import 'bytemd/dist/index.css';
 
+/* Design tokens */
+:root {
+	--font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+	/* Warm bakery accent (crust / sourdough) */
+	--accent: #f5c518;
+	--accent-ink: #1a1a1a;
+	--shadow-hard: 4px 4px 0 0 #000;
+	--shadow-hard-lg: 6px 6px 0 0 #000;
+	/* Softer hover tints (no harsh full-color inversion) */
+	--hover-light: #ebebe4;
+	--hover-dark: #2e2e2e;
+}
+
+body {
+	font-family: var(--font-display);
+	background-color: #fafaf7;
+	/* Subtle paper grain so the white isn't flat */
+	background-image: radial-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+	background-size: 4px 4px;
+}
+
+/* Numbers / code keep the mono voice */
+.font-mono,
+.percentage-input,
+.amount-input {
+	font-family: var(--font-mono);
+}
+
 /* Semantic Classes */
 .page-container {
 	@apply min-h-screen;
 }
 
 .content-wrapper {
-	@apply px-4 py-8 pb-20;
+	@apply px-4 py-8 pb-28;
 }
 
 .main-card {
 	@apply mx-auto max-w-4xl overflow-hidden border-2 border-black bg-white;
+	box-shadow: var(--shadow-hard-lg);
 }
 
 .header-section {
-	@apply bg-black px-8 py-6 text-white;
+	@apply relative bg-black px-8 py-7 text-white;
 }
 
 .app-title {
-	@apply text-center text-3xl font-bold;
+	@apply text-center text-3xl font-extrabold tracking-tight;
+	letter-spacing: -0.02em;
 }
 
 .app-subtitle {
-	@apply mt-2 text-center text-gray-300;
+	@apply mt-2 text-center text-sm tracking-wide text-gray-400 uppercase;
 }
 
 .primary-button {
-	@apply flex w-full items-center justify-center border-2 border-black bg-black px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black focus:ring-2 focus:ring-black focus:outline-none;
+	@apply flex w-full items-center justify-center border-2 border-black bg-black px-6 py-3 font-semibold tracking-wide text-white uppercase transition-all duration-150 focus:ring-2 focus:ring-black focus:outline-none;
+	box-shadow: var(--shadow-hard);
+}
+
+.primary-button:hover {
+	background-color: var(--hover-dark);
+	transform: translate(-2px, -2px);
+	box-shadow: var(--shadow-hard-lg);
+}
+
+.primary-button:active {
+	transform: translate(2px, 2px);
+	box-shadow: none;
 }
 
 .secondary-button {
-	@apply flex w-full items-center justify-center border-2 border-black bg-white px-6 py-3 font-semibold text-black transition-colors duration-200 hover:bg-black hover:text-white focus:ring-2 focus:ring-black focus:outline-none;
+	@apply flex w-full items-center justify-center border-2 border-black bg-white px-6 py-3 font-semibold tracking-wide text-black uppercase transition-all duration-150 focus:ring-2 focus:ring-black focus:outline-none;
+	box-shadow: var(--shadow-hard);
+}
+
+.secondary-button:hover {
+	background-color: var(--hover-light);
+	transform: translate(-2px, -2px);
+	box-shadow: var(--shadow-hard-lg);
+}
+
+.secondary-button:active {
+	transform: translate(2px, 2px);
+	box-shadow: none;
+}
+
+/* Reusable button treatments (caller controls width) */
+.btn-dark {
+	@apply inline-flex items-center justify-center border-2 border-black bg-black px-4 py-2 text-sm font-semibold tracking-wide text-white uppercase transition-all duration-150 focus:ring-2 focus:ring-black focus:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+	box-shadow: var(--shadow-hard);
+}
+
+.btn-dark:hover:not(:disabled) {
+	background-color: var(--hover-dark);
+	transform: translate(-2px, -2px);
+	box-shadow: var(--shadow-hard-lg);
+}
+
+.btn-dark:active:not(:disabled) {
+	transform: translate(2px, 2px);
+	box-shadow: none;
+}
+
+.btn-light {
+	@apply inline-flex items-center justify-center border-2 border-black bg-white px-4 py-2 text-sm font-semibold tracking-wide text-black uppercase transition-all duration-150 focus:ring-2 focus:ring-black focus:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+	box-shadow: var(--shadow-hard);
+}
+
+.btn-light:hover:not(:disabled) {
+	background-color: var(--hover-light);
+	transform: translate(-2px, -2px);
+	box-shadow: var(--shadow-hard-lg);
+}
+
+.btn-light:active:not(:disabled) {
+	transform: translate(2px, 2px);
+	box-shadow: none;
+}
+
+.btn-accent {
+	@apply inline-flex items-center justify-center border-2 border-black px-4 py-2 text-sm font-semibold tracking-wide text-black uppercase transition-all duration-150 focus:ring-2 focus:ring-black focus:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+	background-color: var(--accent);
+	box-shadow: var(--shadow-hard);
+}
+
+.btn-accent:hover:not(:disabled) {
+	background-color: #e0b30f;
+	transform: translate(-2px, -2px);
+	box-shadow: var(--shadow-hard-lg);
+}
+
+.btn-accent:active:not(:disabled) {
+	transform: translate(2px, 2px);
+	box-shadow: none;
 }
 
 .add-ingredient-section {
