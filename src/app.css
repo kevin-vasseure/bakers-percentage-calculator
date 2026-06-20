@@ -2,9 +2,6 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
-/* Bytemd Editor Styles */
-@import 'bytemd/dist/index.css';
-
 /* Design tokens */
 :root {
 	--font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;

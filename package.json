@@ -48,8 +48,7 @@
 		]
 	},
 	"dependencies": {
-		"@bytemd/plugin-gfm": "^1.22.0",
-		"@bytemd/plugin-highlight": "^1.22.0",
-		"bytemd": "^1.22.0"
+		"dompurify": "^3.4.11",
+		"marked": "^18.0.5"
 	}
 }
