@@ -8,7 +8,7 @@ Application web permettant aux boulangers de calculer et gérer les pourcentages
 - **Langage** : TypeScript 5 (avec `allowJs`, config via `jsconfig.json`)
 - **Styling** : Tailwind CSS v4 (plugin Vite natif, pas de `tailwind.config.js`) + classes sémantiques dans `app.css`
 - **Persistance** : `localStorage` (recettes sauvegardées côté navigateur, sans backend ni compte)
-- **Éditeur Markdown** : ByteMD avec GFM
+- **Éditeur Markdown** : éditeur maison (textarea + aperçu) rendu via `marked`, assaini avec `DOMPurify`
 - **Déploiement** : Vercel (`@sveltejs/adapter-vercel`)
 - **Tests** : Vitest + Testing Library (setup minimal)
 - **Package manager** : npm
@@ -40,7 +40,7 @@ src/
 │   │   ├── IngredientRowEdit.svelte    # Ligne éditable (modal, drag, toggle flour)
 │   │   ├── EditModal.svelte            # Modal générique d'édition (poids, portions, valeurs)
 │   │   ├── TotalWeight.svelte          # Poids total + portions + poids/portion (éditables en mode edit)
-│   │   ├── MarkdownEditor.svelte       # Wrapper ByteMD
+│   │   ├── MarkdownEditor.svelte       # Éditeur Markdown maison (textarea + aperçu marked/DOMPurify)
 │   │   ├── RecipeList.svelte           # Panel recettes (liste, save, import/export JSON)
 │   │   ├── SaveRecipeModal.svelte      # Modal sauvegarde recette
 │   │   ├── BottomBar.svelte            # Dock flottant icônes : view/edit, recettes, partage, écran allumé, aide

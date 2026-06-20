@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bakers-pct-v1';
+const CACHE_NAME = 'bakers-pct-v2';
 
 // Assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -6,6 +6,8 @@ const PRECACHE_ASSETS = [
   '/site.webmanifest',
   '/android-chrome-192x192.png',
   '/android-chrome-512x512.png',
+  '/android-chrome-maskable-192x192.png',
+  '/android-chrome-maskable-512x512.png',
   '/apple-touch-icon.png',
   '/favicon.ico'
 ];
