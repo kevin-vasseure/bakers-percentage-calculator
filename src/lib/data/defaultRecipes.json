@@ -128,5 +128,20 @@
       { "id": 1, "name": "Eau", "isFlour": true, "amount": 450, "percentage": 100 },
       { "id": 2, "name": "Café", "isFlour": false, "amount": 27, "percentage": 6 }
     ]
+  },
+  {
+    "id": "pain-au-lait",
+    "title": "Milk Bread (Tangzhong)",
+    "description": "Ultra-soft, fluffy milk bread made with the Japanese Tangzhong (milk roux) technique. Scaled for 400 g of flour.",
+    "notes": "## The secret: Tangzhong\n\nBy cooking a small portion of the flour with milk before making the dough, you gelatinize the starch. The dough then absorbs much more moisture without getting sticky, and the rolls stay soft for several days.\n\n> Recipe scaled for **400 g of T45 or strong (bread) flour**.\n\n### Tangzhong breakdown (taken from the 400 g flour and 220 g milk)\n- **20 g** flour\n- **100 g** whole milk\n\nThe rest goes into the main dough: **380 g** flour, **120 g** whole milk (cold), the egg, sugar, yeast, salt and butter.\n\n## Step-by-step method\n\n1. **Make the Tangzhong** *(5 min)* — Whisk the 20 g flour and 100 g milk in a saucepan. Heat gently, stirring constantly, until it thickens into a pastry-cream consistency (around 65 °C). Cover with cling film touching the surface and let cool completely.\n2. **Initial mixing** *(10 min in a stand mixer)* — In the bowl with the dough hook, add the cold milk, egg, cooled Tangzhong, sugar and crumbled yeast. Add the flour, then the salt. Knead on low speed for 8-10 min until the dough pulls away from the sides.\n3. **Adding the butter** *(10-12 min)* — Switch to medium speed and add the soft butter in 3 or 4 batches, waiting until each is absorbed. Knead until the dough is smooth, glossy and passes the windowpane test.\n4. **First rise (bulk fermentation)** *(1h30 to 2h)* — Shape into a ball, cover and let it double in volume at room temperature. Optional: overnight in the fridge after 45 min at room temperature for easier shaping.\n5. **Shaping and second rise** *(1h15)* — Degas, divide into 8 pieces of about 100 g. Shape into balls, flatten into ovals then roll up into logs. Place on a lined tray, cover and let rise for 1h15.\n6. **Egg wash and baking** *(12-15 min at 180 °C)* — Brush with an egg yolk mixed with a splash of milk. For the traditional look, snip the tops at an angle with scissors. Bake 12-15 min until golden. Cool on a rack.\n\n> **Baker's tip:** for an ultra-shiny finish, brush the rolls with a light sugar syrup (equal parts water and sugar, boiled) or melted butter right out of the oven.",
+    "ingredients": [
+      { "id": 1, "name": "Bread Flour (T45)", "isFlour": true, "amount": 400, "percentage": 100 },
+      { "id": 2, "name": "Whole Milk", "isFlour": false, "amount": 220, "percentage": 55 },
+      { "id": 3, "name": "Egg", "isFlour": false, "amount": 50, "percentage": 12.5 },
+      { "id": 4, "name": "Sugar", "isFlour": false, "amount": 50, "percentage": 12.5 },
+      { "id": 5, "name": "Butter", "isFlour": false, "amount": 60, "percentage": 15 },
+      { "id": 6, "name": "Fresh Yeast", "isFlour": false, "amount": 12, "percentage": 3 },
+      { "id": 7, "name": "Salt", "isFlour": false, "amount": 7, "percentage": 1.75 }
+    ]
   }
 ]
