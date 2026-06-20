@@ -128,5 +128,20 @@
       { "id": 1, "name": "Eau", "isFlour": true, "amount": 450, "percentage": 100 },
       { "id": 2, "name": "Café", "isFlour": false, "amount": 27, "percentage": 6 }
     ]
+  },
+  {
+    "id": "pain-au-lait",
+    "title": "Pain au lait (Tangzhong)",
+    "description": "Pain au lait ultra-moelleux et filant grâce à la technique japonaise du Tangzhong (roux de lait). Calibré pour 400 g de farine.",
+    "notes": "## Le secret : le Tangzhong\n\nEn faisant cuire une petite partie de la farine avec du lait avant de lancer la pâte, on gélatinise l'amidon. La pâte absorbe alors beaucoup plus d'humidité sans devenir collante, et les pains restent tendres pendant plusieurs jours.\n\n> Recette calibrée pour **400 g de farine T45 ou de force (Gruau)**.\n\n### Détail du Tangzhong (prélevé sur les 400 g de farine et 220 g de lait)\n- **20 g** de farine\n- **100 g** de lait entier\n\nLe reste part dans la pâte principale : **380 g** de farine, **120 g** de lait entier (froid), l'œuf, le sucre, la levure, le sel et le beurre.\n\n## La méthode pas à pas\n\n1. **Préparer le Tangzhong** *(5 min)* — Fouettez les 20 g de farine et les 100 g de lait dans une casserole. Chauffez à feu doux en remuant constamment jusqu'à obtenir une crème pâtissière (environ 65 °C). Filmez au contact et laissez refroidir complètement.\n2. **Le frasage** *(10 min au robot)* — Dans la cuve avec le crochet, versez le lait froid, l'œuf, le Tangzhong refroidi, le sucre et la levure émiettée. Ajoutez la farine puis le sel. Pétrissez à vitesse lente 8 à 10 min jusqu'à ce que la pâte se décolle des parois.\n3. **L'incorporation du beurre** *(10-12 min)* — Passez en vitesse moyenne et ajoutez le beurre mou en 3 ou 4 fois, en attendant que chaque morceau soit absorbé. Pétrissez jusqu'à une pâte lisse et brillante qui passe le « test de la fenêtre ».\n4. **La première pousse (pointage)** *(1h30 à 2h)* — Formez une boule, couvrez et laissez doubler de volume à température ambiante. Option : une nuit au frigo après 45 min à température ambiante pour un façonnage plus facile.\n5. **Façonnage et deuxième pousse** *(1h15)* — Dégazez, divisez en 8 pâtons d'environ 100 g. Boulez, étalez en ovale puis roulez en boudin. Déposez sur plaque, couvrez et laissez pousser 1h15.\n6. **Dorure et cuisson** *(12-15 min à 180 °C)* — Dorez au jaune d'œuf additionné d'un filet de lait. Pour le look traditionnel, donnez des coups de ciseaux en biais. Enfournez 12 à 15 min jusqu'à belle coloration. Refroidir sur grille.\n\n> **L'astuce du boulanger :** pour un fini ultra-brillant, badigeonnez les pains d'un léger sirop de sucre (eau et sucre à poids égal, bouillis) ou de beurre fondu dès la sortie du four.",
+    "ingredients": [
+      { "id": 1, "name": "Farine T45 / Gruau", "isFlour": true, "amount": 400, "percentage": 100 },
+      { "id": 2, "name": "Lait entier", "isFlour": false, "amount": 220, "percentage": 55 },
+      { "id": 3, "name": "Œuf entier", "isFlour": false, "amount": 50, "percentage": 12.5 },
+      { "id": 4, "name": "Sucre semoule", "isFlour": false, "amount": 50, "percentage": 12.5 },
+      { "id": 5, "name": "Beurre doux", "isFlour": false, "amount": 60, "percentage": 15 },
+      { "id": 6, "name": "Levure fraîche", "isFlour": false, "amount": 12, "percentage": 3 },
+      { "id": 7, "name": "Sel fin", "isFlour": false, "amount": 7, "percentage": 1.75 }
+    ]
   }
 ]
