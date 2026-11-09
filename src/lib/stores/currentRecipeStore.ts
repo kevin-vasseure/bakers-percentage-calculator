@@ -65,10 +65,45 @@ function createCurrentRecipeStore() {
 			})),
 
 		removeIngredient: (id: number) =>
-			update((recipe) => ({
-				...recipe,
-				ingredients: recipe.ingredients.filter((ing) => ing.id !== id)
-			})),
+			update((recipe) => {
+				const removed = recipe.ingredients.find((ing) => ing.id === id);
+				let remaining = recipe.ingredients.filter((ing) => ing.id !== id);
+
+				// Removing a non-flour doesn't affect anything else
+				if (!removed?.isFlour || remaining.length === 0) {
+					return { ...recipe, ingredients: remaining };
+				}
+
+				// Removed the last flour: promote the first remaining ingredient to flour,
+				// keep amounts and recompute percentages against it
+				if (!remaining.some((ing) => ing.isFlour)) {
+					remaining = remaining.map((ing, index) =>
+						index === 0 ? { ...ing, isFlour: true, percentage: 100 } : ing
+					);
+					const flourTotal = remaining[0].amount;
+					return {
+						...recipe,
+						ingredients: remaining.map((ing) =>
+							ing.isFlour
+								? ing
+								: { ...ing, percentage: flourTotal > 0 ? (ing.amount / flourTotal) * 100 : 0 }
+						)
+					};
+				}
+
+				// Removed one of several flours: flour total shrinks, so non-flour
+				// amounts follow their percentages (same rule as editing a flour amount)
+				const flourTotal = remaining
+					.filter((ing) => ing.isFlour)
+					.reduce((sum, ing) => sum + ing.amount, 0);
+
+				return {
+					...recipe,
+					ingredients: remaining.map((ing) =>
+						ing.isFlour ? ing : { ...ing, amount: (flourTotal * ing.percentage) / 100 }
+					)
+				};
+			}),
 
 		updateIngredient: (id: number, updates: Partial<Ingredient>) =>
 			update((recipe) => ({
